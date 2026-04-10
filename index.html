@@ -136,13 +136,28 @@ input,select{width:100%;padding:10px 12px;border:0.5px solid #3a3a3c;border-radi
           <span id="calc-result" style="font-size:16px;font-weight:600;color:#f2f2f7">--</span>
           <button class="btn" style="width:auto;padding:8px 14px;margin-top:0;font-size:13px;background:#185FA5;color:#fff" onclick="applyCalc()">填入 ↑</button>
         </div>
-      </div>
+  <div id="pg-log" class="pg">
 
-      <label>备注（可选）</label>
-      <input type="text" id="log-note" placeholder="项目名称等">
-      <button class="btn bg" onclick="addEntry()">＋ 添加工时</button>
+  <!-- 添加工时 -->
+  <div class="cd">
+    <div class="ct">添加工时</div>
+
+    <!-- 你原来的输入区域 -->
+    <label>备注（可选）</label>
+    <input type="text" id="log-note" placeholder="项目名称等">
+
+    <button class="btn bg" onclick="addEntry()">＋ 添加工时</button>
+  </div>
+
+  <!-- ✅ 全部记录（单独一个卡片） -->
+  <div class="cd">
+    <div class="ct">全部记录</div>
+    <div id="all-entries">
+      <div class="empty">还没有记录</div>
     </div>
-</div>   <!-- 👈 这个是缺失的 -->
+  </div>
+
+</div>
 
 <div id="pg-paid" class="pg">
   <div class="cd">
