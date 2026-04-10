@@ -1,458 +1,413 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="工时记录">
-<title>工时记录</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:#1c1c1e;color:#f2f2f7;min-height:100vh;padding-bottom:84px}
-nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#2c2c2e;border-top:0.5px solid #3a3a3c;padding:8px 0;padding-bottom:calc(8px + env(safe-area-inset-bottom));z-index:99}
-nav button{flex:1;background:none;border:none;color:#636366;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;cursor:pointer;font-family:inherit}
-nav button i{font-size:22px;font-style:normal;line-height:1.2}
-nav button.on{color:#1D9E75}
-.pg{display:none;padding:12px 12px 0}.pg.on{display:block}
-.mg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.mc{background:#2c2c2e;border-radius:10px;padding:12px}
-.ml{font-size:11px;color:#636366;margin-bottom:3px}
-.mv{font-size:22px;font-weight:600}
-.gn .mv{color:#1D9E75}.am .mv{color:#EF9F27}
-.cd{background:#2c2c2e;border-radius:14px;padding:14px;margin-bottom:12px}
-.ct{font-size:11px;font-weight:600;color:#636366;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
-label{font-size:12px;color:#8e8e93;display:block;margin-bottom:4px}
-input,select{width:100%;padding:10px 12px;border:0.5px solid #3a3a3c;border-radius:10px;font-size:16px;background:#3a3a3c;color:#f2f2f7;font-family:inherit;-webkit-appearance:none;appearance:none;margin-bottom:10px;outline:none}
-.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btn{display:block;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px}
-.btn:active{opacity:.7}
-.bg{background:#1D9E75;color:#fff}
-.ba{background:#BA7517;color:#fff}
-.bb{background:#185FA5;color:#fff}
-.bk{background:#3a3a3c;color:#f2f2f7;margin-top:8px}
-.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:0.5px solid #3a3a3c}
-.row:last-child{border-bottom:none}
-.rm{font-size:11px;color:#636366;margin-bottom:2px}
-.rd{font-size:14px}
-.rh{font-size:15px;font-weight:600}
-.bx{display:inline-block;font-size:10px;padding:2px 7px;border-radius:8px;font-weight:500}
-.xa{background:#0a2e22;color:#1D9E75}.xb{background:#0a1f38;color:#378ADD}
-.xd{background:none;border:none;color:#555;font-size:18px;padding:4px 8px;cursor:pointer}
-.empty{text-align:center;padding:24px;color:#636366;font-size:13px}
-.pv{background:#3a3a3c;border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:13px;color:#8e8e93;line-height:1.7}
-.pv b{color:#f2f2f7}
-.cn{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.cn button{background:#3a3a3c;border:none;border-radius:8px;padding:7px 18px;color:#f2f2f7;font-size:18px;cursor:pointer}
-.cm{font-size:15px;font-weight:600}
-.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.dw{font-size:10px;color:#636366;text-align:center;padding:3px 0;font-weight:500}
-.dy{border-radius:8px;padding:5px 3px 4px;min-height:54px;background:#3a3a3c;position:relative;overflow:hidden;cursor:pointer;touch-action:manipulation}
-.dy.em{background:none;pointer-events:none}
-.dy.td{border:1.5px solid #1D9E75}
-.dy.he{background:#2c2c2e;border:0.5px solid #444}
-.dn{font-size:11px;color:#8e8e93;line-height:1;margin-bottom:2px}
-.dh{font-size:10px;font-weight:600;color:#f2f2f7;line-height:1}
-.dd{display:flex;gap:2px;margin-top:2px}
-.da{width:5px;height:5px;border-radius:50%;background:#1D9E75}
-.db{width:5px;height:5px;border-radius:50%;background:#378ADD}
-.bb2{position:absolute;bottom:0;left:0;right:0;height:5px;background:#444}
-.bf{height:100%;border-radius:0 0 8px 8px}
-.lg{display:flex;gap:14px;margin-top:10px;font-size:11px;color:#636366;align-items:center}
-.ld{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:3px}
-.rb{background:#fff;border-radius:14px;padding:18px;color:#1a1a1a;margin-bottom:12px}
-.rh2{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #eee}
-.rt2{font-size:15px;font-weight:700;color:#1a1a1a}
-.rs{font-size:11px;color:#999;margin-top:2px}
-.rbig{font-size:24px;font-weight:700}
-.rst{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#bbb;margin-bottom:8px;font-weight:600}
-.rc{background:#f8f8f8;border-radius:10px;padding:10px 12px;margin-bottom:8px}
-.rcn{font-size:13px;font-weight:700;margin-bottom:5px}
-.rkv{display:flex;justify-content:space-between;font-size:13px;padding:2px 0;color:#555}
-.rkv span:last-child{font-weight:600;color:#1a1a1a}
-.rbg{background:#ebebeb;border-radius:4px;height:6px;margin-top:6px}
-.rbf{height:6px;border-radius:4px}
-.rtot{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid #eee;margin-top:6px}
-.rtot span:first-child{font-size:14px;font-weight:600;color:#1a1a1a}
-.rtot span:last-child{font-size:17px;font-weight:700}
-.rft{text-align:center;font-size:10px;color:#ccc;margin-top:10px;padding-top:10px;border-top:1px solid #f5f5f5}
-#toast{position:fixed;top:24px;left:50%;transform:translateX(-50%);background:#1D9E75;color:#fff;padding:9px 20px;border-radius:20px;font-size:14px;font-weight:600;z-index:999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
-#toast.show{opacity:1}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>工时记录 Pro</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; background: #1c1c1e; color: #f2f2f7; min-height: 100vh; padding-bottom: 90px; }
+        
+        /* 导航栏 */
+        nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; background: rgba(44, 44, 46, 0.95); backdrop-filter: blur(10px); border-top: 0.5px solid #3a3a3c; padding-bottom: env(safe-area-inset-bottom); z-index: 99; }
+        nav button { flex: 1; background: none; border: none; color: #8e8e93; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 0; cursor: pointer; }
+        nav button i { font-size: 20px; font-style: normal; }
+        nav button.on { color: #1D9E75; }
+
+        /* 通用组件 */
+        .pg { display: none; padding: 12px; animation: fadeIn 0.2s ease-out; }
+        .pg.on { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .cd { background: #2c2c2e; border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+        .ct { font-size: 12px; font-weight: 600; color: #8e8e93; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .mg { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+        .mc { background: #2c2c2e; border-radius: 14px; padding: 12px; }
+        .mv { font-size: 24px; font-weight: 700; margin-top: 4px; }
+        .gn .mv { color: #1D9E75; }
+        .am .mv { color: #EF9F27; }
+        .ml { font-size: 11px; color: #8e8e93; }
+
+        /* 表单元素 */
+        label { font-size: 12px; color: #8e8e93; display: block; margin-bottom: 6px; padding-left: 2px; }
+        input, select { width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 16px; background: #3a3a3c; color: #fff; margin-bottom: 12px; outline: none; font-family: inherit; }
+        .r2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        .btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 0.1s; }
+        .btn:active { opacity: 0.6; }
+        .bg { background: #1D9E75; color: #fff; }
+        .ba { background: #BA7517; color: #fff; }
+        .bb { background: #185FA5; color: #fff; }
+        .bk { background: #3a3a3c; color: #f2f2f7; }
+
+        /* 列表项 */
+        .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 0.5px solid #3a3a3c; }
+        .row:last-child { border-bottom: none; }
+        .rm { font-size: 11px; color: #8e8e93; margin-bottom: 4px; }
+        .rd { font-size: 15px; color: #f2f2f7; }
+        .rh { font-size: 16px; font-weight: 600; }
+        .bx { font-size: 10px; padding: 2px 6px; border-radius: 6px; margin-left: 4px; font-weight: 600; }
+        .xa { background: rgba(29,158,117,0.2); color: #1D9E75; }
+        .xb { background: rgba(55,138,221,0.2); color: #378ADD; }
+        .xd { background: none; border: none; color: #ff453a; font-size: 18px; padding: 8px; cursor: pointer; }
+
+        /* 日历部分 */
+        .cn { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .cn button { background: #3a3a3c; border: none; border-radius: 8px; width: 36px; height: 36px; color: #fff; font-size: 20px; }
+        .cg { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .dw { font-size: 10px; color: #636366; text-align: center; padding-bottom: 5px; }
+        .dy { border-radius: 10px; padding: 6px 4px; min-height: 50px; background: #3a3a3c; position: relative; text-align: center; cursor: pointer; }
+        .dy.em { background: none; pointer-events: none; }
+        .dy.td { border: 1.5px solid #1D9E75; }
+        .dy.he { background: #2c2c2e; box-shadow: inset 0 0 0 0.5px #444; }
+        .dn { font-size: 12px; color: #8e8e93; margin-bottom: 2px; }
+        .dh { font-size: 10px; font-weight: 700; color: #fff; }
+        .bb2 { position: absolute; bottom: 4px; left: 6px; right: 6px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+        .bf { height: 100%; transition: width 0.3s; }
+
+        /* Toast */
+        #toast { position: fixed; top: 40px; left: 50%; transform: translateX(-50%); background: #1D9E75; color: #fff; padding: 10px 24px; border-radius: 25px; font-size: 14px; font-weight: 600; z-index: 1000; opacity: 0; transition: 0.3s; pointer-events: none; }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(10px); }
+        .empty { text-align: center; padding: 30px; color: #636366; font-size: 14px; }
+    </style>
 </head>
 <body>
+
 <div id="toast"></div>
 
 <div id="pg-cal" class="pg on">
-  <div class="mg">
-    <div class="mc gn"><div class="ml">本周工时</div><div class="mv" id="h-week">--</div></div>
-    <div class="mc am"><div class="ml">存余未发薪</div><div class="mv" id="h-saved">--</div></div>
-  </div>
-  <div class="cd">
-    <div class="cn">
-      <button onclick="calMove(-1)">‹</button>
-      <span class="cm" id="cal-label"></span>
-      <button onclick="calMove(1)">›</button>
+    <div class="mg">
+        <div class="mc gn"><div class="ml">本周工时</div><div class="mv" id="h-week">0h</div></div>
+        <div class="mc am"><div class="ml">未发薪存余</div><div class="mv" id="h-saved">0h</div></div>
     </div>
-    <div class="cg" id="cal-grid"></div>
-    <div class="lg">
-      <span><div class="ld" style="background:#1D9E75"></div><span id="leg-a">公司A</span></span>
-      <span><div class="ld" style="background:#378ADD"></div><span id="leg-b">公司B</span></span>
-      <span style="margin-left:auto;color:#444;font-size:10px">满格=12h</span>
+    <div class="cd">
+        <div class="cn">
+            <button onclick="calMove(-1)">‹</button>
+            <span id="cal-label" style="font-weight:700"></span>
+            <button onclick="calMove(1)">›</button>
+        </div>
+        <div class="cg" id="cal-grid"></div>
     </div>
-  </div>
-  <div class="cd"><div class="ct">最近记录</div><div id="recent-list"><div class="empty">还没有记录</div></div></div>
+    <div class="cd">
+        <div class="ct">最近记录</div>
+        <div id="recent-list"></div>
+    </div>
 </div>
 
 <div id="pg-log" class="pg">
-     <div class="cd">
-      <div class="ct">添加工时</div>
-      <label>公司</label>
-      <select id="log-co"><option value="A" id="lopt-a">公司A</option><option value="B" id="lopt-b">公司B</option></select>
-      <div class="r2">
-        <div><label>日期</label><input type="date" id="log-date"></div>
-        <div><label>小时数</label><input type="number" id="log-hours" min="0.5" max="24" step="0.5" placeholder="0" inputmode="decimal"></div>
-      </div>
-
-      <!-- 打卡区域 -->
-      <div style="background:#3a3a3c;border-radius:10px;padding:12px;margin-bottom:10px">
-        <div style="font-size:11px;font-weight:600;color:#636366;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">打卡计时</div>
-        <div class="r2" style="margin-bottom:8px">
-          <div>
-            <label>上班时间</label>
-            <input type="time" id="log-in" style="margin-bottom:0" onchange="calcHours()">
-          </div>
-          <div>
-            <label>下班时间</label>
-            <input type="time" id="log-out" style="margin-bottom:0" onchange="calcHours()">
-          </div>
+    <div class="cd">
+        <div class="ct">快速打卡</div>
+        <div class="r2" style="margin-bottom:12px">
+            <div>
+                <label>上班时间</label>
+                <input type="time" id="log-in" onchange="calcHours()">
+            </div>
+            <div>
+                <label>下班时间</label>
+                <input type="time" id="log-out" onchange="calcHours()">
+            </div>
         </div>
-        <div style="display:flex;gap:8px;margin-bottom:8px">
-          <button class="btn" style="background:#2c2c2e;color:#1D9E75;border:0.5px solid #1D9E75;margin-top:0;padding:10px;font-size:14px" onclick="stampIn()">▶ 现在上班</button>
-          <button class="btn" style="background:#2c2c2e;color:#EF9F27;border:0.5px solid #EF9F27;margin-top:0;padding:10px;font-size:14px" onclick="stampOut()">■ 现在下班</button>
+        <div class="r2" style="margin-bottom:12px">
+            <button class="btn bk" style="font-size:14px" onclick="stampIn()">▶ 记上班</button>
+            <button class="btn bk" style="font-size:14px" onclick="stampOut()">■ 记下班</button>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:12px;color:#636366">计算工时</span>
-          <span id="calc-result" style="font-size:16px;font-weight:600;color:#f2f2f7">--</span>
-          <button class="btn" style="width:auto;padding:8px 14px;margin-top:0;font-size:13px;background:#185FA5;color:#fff" onclick="applyCalc()">填入 ↑</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:12px; border-radius:10px">
+            <span style="font-size:13px; color:#8e8e93">计算结果: <b id="calc-result" style="color:#fff">--</b></span>
+            <button class="btn bg" style="width:auto; padding:6px 15px; font-size:13px" onclick="applyCalc()">填入下方</button>
         </div>
- </div>  <!-- 👈 关闭打卡区域 -->
-
-  <!-- 添加工时 -->
-  <div class="cd">
-    <div class="ct">添加工时</div>
-
-    <!-- 你原来的输入区域 -->
-    <label>备注（可选）</label>
-    <input type="text" id="log-note" placeholder="项目名称等">
-
-    <button class="btn bg" onclick="addEntry()">＋ 添加工时</button>
-  </div>
-
-  <!-- ✅ 全部记录（单独一个卡片） -->
-  <div class="cd">
-    <div class="ct">全部记录</div>
-    <div id="all-entries">
-      <div class="empty">还没有记录</div>
     </div>
-  </div>
 
+    <div class="cd">
+        <div class="ct">添加工时记录</div>
+        <label>公司</label>
+        <select id="log-co"></select>
+        
+        <div class="r2">
+            <div><label>日期</label><input type="date" id="log-date"></div>
+            <div><label>工时数</label><input type="number" id="log-hours" step="0.5" placeholder="0.0"></div>
+        </div>
+        
+        <label>备注 (项目/内容)</label>
+        <input type="text" id="log-note" placeholder="选填...">
+        <button class="btn bg" onclick="addEntry()">＋ 保存记录</button>
+    </div>
+
+    <div class="cd">
+        <div class="ct">历史记录 (按日期排序)</div>
+        <div id="all-entries"></div>
+    </div>
 </div>
 
 <div id="pg-paid" class="pg">
-  <div class="cd">
-    <div class="ct">记录已发薪工时</div>
-    <label>公司</label>
-    <select id="p-co" onchange="upPrev()"><option value="A" id="popt-a">公司A</option><option value="B" id="popt-b">公司B</option></select>
-    <div class="r2">
-      <div><label>发薪工时</label><input type="number" id="p-hours" min="0.5" step="0.5" value="25" oninput="upPrev()" inputmode="decimal"></div>
-      <div><label>周次</label><input type="text" id="p-week" placeholder="2024-W15"></div>
+    <div class="cd">
+        <div class="ct">记录发薪</div>
+        <select id="p-co" onchange="upPrev()"></select>
+        <div class="r2">
+            <div><label>发薪工时</label><input type="number" id="p-hours" step="0.5" oninput="upPrev()"></div>
+            <div><label>周次</label><input type="text" id="p-week"></div>
+        </div>
+        <div id="p-prev" style="font-size:13px; color:#8e8e93; margin-bottom:15px; line-height:1.6"></div>
+        <button class="btn ba" onclick="doPaid()">确认核销存余</button>
     </div>
-    <div class="pv" id="p-prev">选择公司查看存余</div>
-    <button class="btn ba" onclick="doPaid()">确认记录发薪</button>
-  </div>
-  <div class="cd"><div class="ct">发薪记录</div><div id="paid-list"><div class="empty">还没有发薪记录</div></div></div>
+    <div class="cd"><div class="ct">发薪历史</div><div id="paid-list"></div></div>
 </div>
 
 <div id="pg-rep" class="pg">
-  <div class="cd">
-    <div class="ct">生成周报</div>
-    <label>选择周次</label>
-    <select id="rep-week"></select>
-    <button class="btn bb" onclick="genReport()" style="margin-bottom:8px">生成预览</button>
-    <button class="btn bk" id="share-btn" style="display:none" onclick="shareReport()">分享给老板 ↗</button>
-  </div>
-  <div id="report-out"></div>
+    <div class="cd">
+        <div class="ct">周报预览</div>
+        <select id="rep-week"></select>
+        <button class="btn bb" onclick="genReport()">生成本周预览</button>
+    </div>
+    <div id="report-out"></div>
 </div>
 
 <div id="pg-set" class="pg">
-  <div class="cd">
-    <div class="ct">公司名称</div>
-    <label>公司 A</label><input type="text" id="set-a" placeholder="公司A">
-    <label>公司 B</label><input type="text" id="set-b" placeholder="公司B">
-    <button class="btn bg" onclick="saveSet()">保存设置</button>
-  </div>
+    <div class="cd">
+        <div class="ct">基础设置</div>
+        <label>公司 A 名称</label><input type="text" id="set-a">
+        <label>公司 B 名称</label><input type="text" id="set-b">
+        <button class="btn bg" onclick="saveSet()">保存更改</button>
+    </div>
 </div>
 
 <nav>
-  <button class="on" onclick="goPage('cal',this)"><i>📅</i><span>日历</span></button>
-  <button onclick="goPage('log',this)"><i>⏱</i><span>记工时</span></button>
-  <button onclick="goPage('paid',this)"><i>💰</i><span>记发薪</span></button>
-  <button onclick="goPage('rep',this)"><i>📊</i><span>周报</span></button>
-  <button onclick="goPage('set',this)"><i>⚙️</i><span>设置</span></button>
+    <button class="on" onclick="goPage('cal',this)"><i>📅</i><span>日历</span></button>
+    <button onclick="goPage('log',this)"><i>⏱</i><span>记工时</span></button>
+    <button onclick="goPage('paid',this)"><i>💰</i><span>核销</span></button>
+    <button onclick="goPage('rep',this)"><i>📊</i><span>周报</span></button>
+    <button onclick="goPage('set',this)"><i>⚙️</i><span>设置</span></button>
 </nav>
 
 <script>
-const SK='wt6'
-let S=JSON.parse(localStorage.getItem(SK)||'{"companies":{"A":{"name":"公司A"},"B":{"name":"公司B"}},"entries":[],"payments":[]}')
-let calY,calM,lastReport=''
+const SK = 'wt_pro_v1';
+let S = JSON.parse(localStorage.getItem(SK) || '{"companies":{"A":{"name":"公司A"},"B":{"name":"公司B"}},"entries":[],"payments":[]}');
+let calY, calM;
 
-const f=h=>(h%1===0?h:h.toFixed(1))+'h'
-const wkOf=ds=>{const d=new Date(ds+'T00:00:00'),y=d.getFullYear(),s=new Date(y,0,1);return y+'-W'+String(Math.ceil(((d-s)/86400000+s.getDay()+1)/7)).padStart(2,'0')}
-const today=()=>new Date().toISOString().split('T')[0]
-const thiswk=()=>wkOf(today())
-const sv=()=>{const t={A:0,B:0},p={A:0,B:0};S.entries.forEach(e=>t[e.co]=(t[e.co]||0)+e.hours);S.payments.forEach(x=>p[x.co]=(p[x.co]||0)+x.hours);return{A:Math.max(0,(t.A||0)-(p.A||0)),B:Math.max(0,(t.B||0)-(p.B||0))}}
-const persist=()=>localStorage.setItem(SK,JSON.stringify(S))
+// 工具函数
+const f = h => (Number(h) % 1 === 0 ? h : Number(h).toFixed(1)) + 'h';
+const today = () => new Date().toISOString().split('T')[0];
+const persist = () => localStorage.setItem(SK, JSON.stringify(S));
+const toast = (m, ok=true) => {
+    const t = document.getElementById('toast');
+    t.textContent = m; t.style.background = ok ? '#1D9E75' : '#ff453a';
+    t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000);
+};
 
-function toast(m,ok=true){
-  const t=document.getElementById('toast')
-  t.textContent=m;t.style.background=ok?'#1D9E75':'#c0392b'
-  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)
+// 获取周次 (ISO 8601)
+function wkOf(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+    const yearStart = new Date(d.getFullYear(), 0, 1);
+    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    return `${d.getFullYear()}-W${String(weekNo).padStart(2, '0')}`;
 }
 
-function goPage(id,btn){
-  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'))
-  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'))
-  document.getElementById('pg-'+id).classList.add('on')
-  btn.classList.add('on')
-  if(id==='cal')rCal()
-  if(id==='log')rLog()
-  if(id==='paid')rPaid()
-  if(id==='rep')rRep()
-  if(id==='set')rSet()
+// 核心逻辑：计算存余
+function getBalance() {
+    const t = {A: 0, B: 0}, p = {A: 0, B: 0};
+    S.entries.forEach(e => t[e.co] += Number(e.hours));
+    S.payments.forEach(x => p[x.co] += Number(x.hours));
+    return { A: t.A - p.A, B: t.B - p.B };
 }
 
-function rCal(){
-  const b=sv(),w=thiswk();let wh=0
-  S.entries.filter(e=>wkOf(e.date)===w).forEach(e=>wh+=e.hours)
-  document.getElementById('h-week').textContent=f(wh)
-  document.getElementById('h-saved').textContent=f(b.A+b.B)
-  document.getElementById('leg-a').textContent=S.companies.A.name
-  document.getElementById('leg-b').textContent=S.companies.B.name
-  const now=new Date()
-  if(calY===undefined){calY=now.getFullYear();calM=now.getMonth()}
-  const MN=['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']
-  document.getElementById('cal-label').textContent=calY+'年 '+MN[calM]
-  const fd=new Date(calY,calM,1).getDay(),dim=new Date(calY,calM+1,0).getDate(),tod=today()
-  const dm={}
-  S.entries.forEach(e=>{
-    const p=e.date.split('-')
-    if(+p[0]===calY&&+p[1]-1===calM){
-      if(!dm[e.date])dm[e.date]={A:0,B:0}
-      dm[e.date][e.co]=(dm[e.date][e.co]||0)+e.hours
+// 页面切换
+function goPage(id, btn) {
+    document.querySelectorAll('.pg').forEach(x => x.classList.remove('on'));
+    document.querySelectorAll('nav button').forEach(x => x.classList.remove('on'));
+    document.getElementById('pg-' + id).classList.add('on');
+    btn.classList.add('on');
+    window['r' + id.charAt(0).toUpperCase() + id.slice(1)]();
+}
+
+// 渲染：日历
+function rCal() {
+    const b = getBalance(), curWk = wkOf(today());
+    let wh = 0;
+    S.entries.filter(e => wkOf(e.date) === curWk).forEach(e => wh += Number(e.hours));
+    
+    document.getElementById('h-week').textContent = f(wh);
+    document.getElementById('h-saved').textContent = f(b.A + b.B);
+
+    if (calY === undefined) { const n = new Date(); calY = n.getFullYear(); calM = n.getMonth(); }
+    document.getElementById('cal-label').textContent = `${calY}年 ${calM + 1}月`;
+
+    const fd = new Date(calY, calM, 1).getDay();
+    const dim = new Date(calY, calM + 1, 0).getDate();
+    const g = document.getElementById('cal-grid');
+    g.innerHTML = ['日','一','二','三','四','五','六'].map(d => `<div class="dw">${d}</div>`).join('');
+
+    for (let i = 0; i < fd; i++) g.innerHTML += '<div class="dy em"></div>';
+
+    const dayMap = {};
+    S.entries.forEach(e => {
+        if (e.date.startsWith(`${calY}-${String(calM+1).padStart(2,'0')}`)) {
+            if (!dayMap[e.date]) dayMap[e.date] = {A:0, B:0};
+            dayMap[e.date][e.co] += Number(e.hours);
+        }
+    });
+
+    for (let d = 1; d <= dim; d++) {
+        const ds = `${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const info = dayMap[ds] || {A:0, B:0};
+        const total = info.A + info.B;
+        const isToday = ds === today();
+        
+        g.innerHTML += `
+            <div class="dy ${total > 0 ? 'he' : ''} ${isToday ? 'td' : ''}" onclick="calClick('${ds}')">
+                <div class="dn">${d}</div>
+                ${total > 0 ? `<div class="dh">${f(total)}</div>` : ''}
+                <div class="bb2">
+                    <div class="bf" style="width:${Math.min(100, (total/12)*100)}%; background:${info.A>0 && info.B>0 ? 'linear-gradient(90deg,#1D9E75 50%,#378ADD 50%)' : (info.B>0 ? '#378ADD':'#1D9E75')}"></div>
+                </div>
+            </div>`;
     }
-  })
-  const g=document.getElementById('cal-grid')
-  g.innerHTML=['日','一','二','三','四','五','六'].map(d=>'<div class="dw">'+d+'</div>').join('')
-  for(let i=0;i<fd;i++)g.innerHTML+='<div class="dy em"></div>'
-  for(let d=1;d<=dim;d++){
-    const ds=calY+'-'+String(calM+1).padStart(2,'0')+'-'+String(d).padStart(2,'0')
-    const inf=dm[ds]||{A:0,B:0},tot=+(inf.A+inf.B).toFixed(1)
-    const pct=Math.min(100,Math.round((tot/12)*100))
-    const hasA=inf.A>0,hasB=inf.B>0
-    const bc=hasA&&hasB?'linear-gradient(90deg,#1D9E75 50%,#378ADD 50%)':hasB?'#378ADD':'#1D9E75'
-    const cls='dy'+(tot>0?' he':'')+(ds===tod?' td':'')
-    g.innerHTML+='<div class="'+cls+'" onclick="calClick(\''+ds+'\')">'
-      +'<div class="dn">'+d+'</div>'
-      +(tot>0?'<div class="dh">'+f(tot)+'</div>':'')
-      +'<div class="dd">'+(hasA?'<div class="da"></div>':'')+(hasB?'<div class="db"></div>':'')+'</div>'
-      +'<div class="bb2"><div class="bf" style="width:'+pct+'%;background:'+bc+'"></div></div>'
-      +'</div>'
-  }
-  const rec=[...S.entries].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,4)
-  const el=document.getElementById('recent-list')
-  el.innerHTML=rec.length?rec.map(e=>'<div class="row">'
-    +'<div><div class="rm">'+e.date+' <span class="bx x'+e.co.toLowerCase()+'">'+S.companies[e.co].name+'</span></div>'
-   +'<div class="rd">'
-  +(e.note||'工作')
-  +(e.inTime && e.outTime 
-    ? '<div style="font-size:11px;color:#8e8e93;margin-top:2px">'
-        + e.inTime + ' - ' + e.outTime +
-      '</div>' 
-    : '')
-+'</div></div>'
-    +'<div class="rh">'+f(e.hours)+'</div></div>').join(''):'<div class="empty">还没有记录</div>'
-}
-function calClick(ds){document.getElementById('log-date').value=ds;document.querySelector('nav button:nth-child(2)').click()}
-function calMove(dir){calM+=dir;if(calM>11){calM=0;calY++}if(calM<0){calM=11;calY--}rCal()}
-
-function rLog(){
-  document.getElementById('lopt-a').textContent=S.companies.A.name
-  document.getElementById('lopt-b').textContent=S.companies.B.name
-  if(!document.getElementById('log-date').value)document.getElementById('log-date').value=today()
-  
-  const all=[...S.entries].sort((a,b)=>b.date.localeCompare(a.date))
-  const el = document.getElementById('all-entries');
-  
-  if (all.length === 0) {
-    el.innerHTML = '<div class="empty">还没有记录</div>';
-    return;
-  }
-
-  el.innerHTML = all.map((e, index) => {
-    // 找到该条目在原数组中的真实索引，以便删除
-    const realIndex = S.entries.findIndex(x => x.id === e.id); 
-    return `
-      <div class="row">
-        <div>
-          <div class="rm">${e.date} <span class="bx x${e.co.toLowerCase()}">${S.companies[e.co].name}</span></div>
-          <div class="rd">
-            ${e.note || '工作'}
-            ${(e.inTime && e.outTime) ? `<div style="font-size:11px;color:#636366;margin-top:2px">${e.inTime} - ${e.outTime}</div>` : ''}
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:4px">
-          <span class="rh">${f(e.hours)}</span>
-          <button class="xd" onclick="delE(${realIndex})">✕</button>
-        </div>
-      </div>`;
-  }).join('');
-}
-function addEntry(){
-  const co=document.getElementById('log-co').value
-  const date=document.getElementById('log-date').value
-  const hours=parseFloat(document.getElementById('log-hours').value)
-  const note=document.getElementById('log-note').value.trim()
-  if(!date||isNaN(hours)||hours<=0){toast('请填写日期和工时',false);return}
-  
-  const inTime = document.getElementById('log-in').value
-const outTime = document.getElementById('log-out').value
-
-S.entries.push({
-  co,
-  date,
-  hours,
-  note,
-  inTime,
-  outTime,
-  id: Date.now()
-})
-  persist();rLog();rCal()
-  document.getElementById('log-hours').value=''
-  document.getElementById('log-note').value=''
-  toast('已保存 ✓')
-}
-function delE(i){S.entries.splice(i,1);persist();rLog();rCal();toast('已删除')}
-
-function upPrev(){
-  const co=document.getElementById('p-co').value,b=sv()
-  const s=co==='A'?b.A:b.B
-  const wh=parseFloat(document.getElementById('p-hours').value)||0
-  document.getElementById('p-prev').innerHTML='<b>'+S.companies[co].name+'</b> 存余：<b>'+f(s)+'</b><br>本次：<b>'+f(wh)+'</b> → 剩余：<b>'+f(Math.max(0,s-wh))+'</b>'
-}
-function rPaid(){
-  document.getElementById('popt-a').textContent=S.companies.A.name
-  document.getElementById('popt-b').textContent=S.companies.B.name
-  if(!document.getElementById('p-week').value)document.getElementById('p-week').value=thiswk()
-  upPrev()
-  const all=[...S.payments].sort((a,b)=>b.week.localeCompare(a.week))
-  document.getElementById('paid-list').innerHTML=all.length?all.map(p=>{
-    const i=S.payments.indexOf(p)
-    return'<div class="row">'
-      +'<div><div class="rm">'+p.week+' <span class="bx x'+p.co.toLowerCase()+'">'+S.companies[p.co].name+'</span></div></div>'
-      +'<div style="display:flex;align-items:center;gap:4px"><span class="rh">'+f(p.hours)+'</span>'
-      +'<button class="xd" onclick="delP('+i+')">✕</button></div></div>'
-  }).join(''):'<div class="empty">还没有发薪记录</div>'
-}
-function doPaid(){
-  const co=document.getElementById('p-co').value
-  const hours=parseFloat(document.getElementById('p-hours').value)
-  const week=document.getElementById('p-week').value.trim()||thiswk()
-  const b=sv(),s=co==='A'?b.A:b.B
-  if(isNaN(hours)||hours<=0){toast('请输入工时',false);return}
-  if(hours>s+0.01){toast('存余不足！当前 '+f(s),false);return}
-  S.payments.push({co,hours,week,id:Date.now()})
-  persist();rPaid();toast('已记录 ✓')
-}
-function delP(i){S.payments.splice(i,1);persist();rPaid();toast('已删除')}
-
-function rRep(){
-  const weeks=new Set([thiswk()])
-  S.entries.forEach(e=>weeks.add(wkOf(e.date)))
-  S.payments.forEach(p=>weeks.add(p.week))
-  document.getElementById('rep-week').innerHTML=[...weeks].sort().reverse().map(w=>'<option value="'+w+'">'+w+'</option>').join('')
-}
-function genReport(){
-  const week=document.getElementById('rep-week').value
-  const nA=S.companies.A.name,nB=S.companies.B.name
-  let wA=0,wB=0,pA=0,pB=0
-  S.entries.filter(e=>wkOf(e.date)===week).forEach(e=>e.co==='A'?wA+=e.hours:wB+=e.hours)
-  S.payments.filter(p=>p.week===week).forEach(p=>p.co==='A'?pA+=p.hours:pB+=p.hours)
-  const b=sv(),mh=Math.max(wA,wB,0.1)
-  const bar=(v,c)=>'<div class="rbg"><div class="rbf" style="width:'+Math.round((v/mh)*100)+'%;background:'+c+'"></div></div>'
-  lastReport='📋 工时周报 · '+week+'\n'+'─'.repeat(22)+'\n【本周工时】\n'+nA+'：'+f(wA)+'\n'+nB+'：'+f(wB)+'\n合计：'+f(wA+wB)+'\n\n【发薪情况】\n'+nA+' 发薪：'+f(pA)+'\n'+nB+' 发薪：'+f(pB)+'\n合计发薪：'+f(pA+pB)+'\n\n【累计存余】\n'+nA+'：'+f(b.A)+'\n'+nB+'：'+f(b.B)+'\n合计存余：'+f(b.A+b.B)+'\n'+'─'.repeat(22)+'\n'+new Date().toLocaleDateString('zh-CN')
-  document.getElementById('report-out').innerHTML='<div class="rb">'
-    +'<div class="rh2"><div><div class="rt2">工时周报</div><div class="rs">'+week+'</div></div><div class="rbig">'+f(wA+wB)+'</div></div>'
-    +'<div style="margin-bottom:12px"><div class="rst">本周工时</div>'
-    +'<div class="rc"><div class="rcn" style="color:#0F6E56">'+nA+'</div><div class="rkv"><span>工作工时</span><span>'+f(wA)+'</span></div>'+bar(wA,'#1D9E75')+'</div>'
-    +'<div class="rc"><div class="rcn" style="color:#185FA5">'+nB+'</div><div class="rkv"><span>工作工时</span><span>'+f(wB)+'</span></div>'+bar(wB,'#378ADD')+'</div></div>'
-    +'<div style="margin-bottom:12px"><div class="rst">发薪情况</div>'
-    +'<div class="rkv"><span>'+nA+' 发薪</span><span>'+f(pA)+'</span></div>'
-    +'<div class="rkv"><span>'+nB+' 发薪</span><span>'+f(pB)+'</span></div>'
-    +'<div class="rtot"><span>合计发薪</span><span style="color:#BA7517">'+f(pA+pB)+'</span></div></div>'
-    +'<div><div class="rst">累计存余（截至今日）</div>'
-    +'<div class="rkv"><span>'+nA+'</span><span style="color:#0F6E56">'+f(b.A)+'</span></div>'
-    +'<div class="rkv"><span>'+nB+'</span><span style="color:#185FA5">'+f(b.B)+'</span></div>'
-    +'<div class="rtot"><span>合计存余</span><span style="color:#BA7517">'+f(b.A+b.B)+'</span></div></div>'
-    +'<div class="rft">生成于 '+new Date().toLocaleDateString('zh-CN')+'</div></div>'
-  document.getElementById('share-btn').style.display='block'
-}
-function shareReport(){
-  if(navigator.share){navigator.share({title:'工时周报',text:lastReport})}
-  else{navigator.clipboard&&navigator.clipboard.writeText(lastReport).then(()=>toast('已复制，可粘贴发送'))}
+    rRecent();
 }
 
-function rSet(){
-  document.getElementById('set-a').value=S.companies.A.name
-  document.getElementById('set-b').value=S.companies.B.name
+function calClick(d) { document.getElementById('log-date').value = d; goPage('log', document.querySelector('nav button:nth-child(2)')); }
+function calMove(dir) { calM += dir; if(calM>11){calM=0;calY++} else if(calM<0){calM=11;calY--} rCal(); }
+
+function rRecent() {
+    const last = [...S.entries].sort((a,b) => b.date.localeCompare(a.date)).slice(0, 3);
+    document.getElementById('recent-list').innerHTML = last.length ? last.map(e => `
+        <div class="row">
+            <div>
+                <div class="rm">${e.date} <span class="bx x${e.co.toLowerCase()}">${S.companies[e.co].name}</span></div>
+                <div class="rd">${e.note || '日常工作'}</div>
+            </div>
+            <div class="rh">${f(e.hours)}</div>
+        </div>`).join('') : '<div class="empty">暂无近期记录</div>';
 }
-function saveSet(){
-  const a=document.getElementById('set-a').value.trim(),b=document.getElementById('set-b').value.trim()
-  if(a)S.companies.A.name=a
-  if(b)S.companies.B.name=b
-  persist();toast('已保存 ✓')
+
+// 渲染：记工时
+function rLog() {
+    const coSel = document.getElementById('log-co');
+    coSel.innerHTML = `<option value="A">${S.companies.A.name}</option><option value="B">${S.companies.B.name}</option>`;
+    if (!document.getElementById('log-date').value) document.getElementById('log-date').value = today();
+    
+    const all = [...S.entries].sort((a,b) => b.date.localeCompare(a.date));
+    document.getElementById('all-entries').innerHTML = all.length ? all.map(e => `
+        <div class="row">
+            <div>
+                <div class="rm">${e.date} <span class="bx x${e.co.toLowerCase()}">${S.companies[e.co].name}</span></div>
+                <div class="rd">${e.note || '工作'} ${e.inTime ? `<small style="color:#636366">(${e.inTime}-${e.outTime})</small>`:''}</div>
+            </div>
+            <div style="display:flex; align-items:center">
+                <span class="rh">${f(e.hours)}</span>
+                <button class="xd" onclick="delE(${e.id})">✕</button>
+            </div>
+        </div>`).join('') : '<div class="empty">点击上方添加第一条记录</div>';
 }
-function stampIn(){
-  const now=new Date()
-  document.getElementById('log-in').value=now.toTimeString().slice(0,5)
-  calcHours()
+
+function stampIn() { document.getElementById('log-in').value = new Date().toTimeString().slice(0,5); calcHours(); }
+function stampOut() { document.getElementById('log-out').value = new Date().toTimeString().slice(0,5); calcHours(); }
+
+function calcHours() {
+    const i = document.getElementById('log-in').value, o = document.getElementById('log-out').value;
+    if(!i || !o) return;
+    const m = (new Date(`2024-01-01T${o}`) - new Date(`2024-01-01T${i}`)) / 60000;
+    document.getElementById('calc-result').textContent = m > 0 ? f(m/60) : '时间错误';
 }
-function stampOut(){
-  const now=new Date()
-  document.getElementById('log-out').value=now.toTimeString().slice(0,5)
-  calcHours()
+
+function applyCalc() {
+    const res = document.getElementById('calc-result').textContent;
+    if (res.includes('h')) {
+        const val = parseFloat(res);
+        document.getElementById('log-hours').value = Math.round(val * 2) / 2;
+        toast('已填入并自动取整');
+    }
 }
-function calcHours(){
-  const i=document.getElementById('log-in').value
-  const o=document.getElementById('log-out').value
-  if(!i||!o){document.getElementById('calc-result').textContent='--';return}
-  const [ih,im]=i.split(':').map(Number)
-  const [oh,om]=o.split(':').map(Number)
-  let mins=(oh*60+om)-(ih*60+im)
-  if(mins<=0){document.getElementById('calc-result').textContent='时间有误';return}
-  const h=+(mins/60).toFixed(2)
-  document.getElementById('calc-result').textContent=f(h)
+
+function addEntry() {
+    const co = document.getElementById('log-co').value;
+    const date = document.getElementById('log-date').value;
+    const hours = parseFloat(document.getElementById('log-hours').value);
+    const note = document.getElementById('log-note').value;
+    if (!date || !hours) return toast('日期和工时必填', false);
+    
+    S.entries.push({ id: Date.now(), co, date, hours, note, inTime: document.getElementById('log-in').value, outTime: document.getElementById('log-out').value });
+    persist(); rLog(); toast('保存成功');
+    document.getElementById('log-hours').value = ''; document.getElementById('log-note').value = '';
 }
-function applyCalc(){
-  const r=document.getElementById('calc-result').textContent
-  if(r==='--'||r==='时间有误'){toast('请先设置上下班时间',false);return}
-  const val=parseFloat(r)
-  document.getElementById('log-hours').value=Math.round(val*2)/2
-  toast('已填入 '+f(Math.round(val*2)/2))
+
+function delE(id) { S.entries = S.entries.filter(e => e.id !== id); persist(); rLog(); }
+
+// 渲染：发薪
+function rPaid() {
+    const pCo = document.getElementById('p-co');
+    pCo.innerHTML = `<option value="A">${S.companies.A.name}</option><option value="B">${S.companies.B.name}</option>`;
+    document.getElementById('p-week').value = wkOf(today());
+    upPrev();
+    const plist = [...S.payments].sort((a,b) => b.week.localeCompare(a.week));
+    document.getElementById('paid-list').innerHTML = plist.map(p => `
+        <div class="row">
+            <div class="rd">${p.week} <span class="bx xa">${S.companies[p.co].name}</span></div>
+            <div style="display:flex; align-items:center">
+                <span class="rh" style="color:#EF9F27">-${f(p.hours)}</span>
+                <button class="xd" onclick="delP(${p.id})">✕</button>
+            </div>
+        </div>`).join('');
 }
-  
-const n=new Date();calY=n.getFullYear();calM=n.getMonth()
-rCal()
+
+function upPrev() {
+    const co = document.getElementById('p-co').value;
+    const b = getBalance()[co];
+    const inputH = parseFloat(document.getElementById('p-hours').value) || 0;
+    document.getElementById('p-prev').innerHTML = `当前存余: <b>${f(b)}</b><br>核销后剩余: <b style="color:#1D9E75">${f(b - inputH)}</b>`;
+}
+
+function doPaid() {
+    const co = document.getElementById('p-co').value, hours = parseFloat(document.getElementById('p-hours').value), week = document.getElementById('p-week').value;
+    if (!hours || hours <= 0) return toast('请输入工时', false);
+    S.payments.push({ id: Date.now(), co, hours, week });
+    persist(); rPaid(); toast('核销成功');
+}
+function delP(id) { S.payments = S.payments.filter(p => p.id !== id); persist(); rPaid(); }
+
+// 渲染：周报
+function rRep() {
+    const weeks = new Set([wkOf(today())]);
+    S.entries.forEach(e => weeks.add(wkOf(e.date)));
+    document.getElementById('rep-week').innerHTML = [...weeks].sort().reverse().map(w => `<option value="${w}">${w}</option>`).join('');
+}
+
+function genReport() {
+    const wk = document.getElementById('rep-week').value;
+    const b = getBalance();
+    let wA = 0, wB = 0;
+    S.entries.filter(e => wkOf(e.date) === wk).forEach(e => e.co === 'A' ? wA += e.hours : wB += e.hours);
+    
+    document.getElementById('report-out').innerHTML = `
+        <div class="cd" style="background:#fff; color:#1c1c1e">
+            <div class="ct" style="color:#8e8e93">WEEKLY REPORT</div>
+            <h2 style="margin-bottom:15px">${wk}</h2>
+            <div class="row" style="border-color:#eee"><div class="rd" style="color:#1c1c1e">${S.companies.A.name}</div><div class="rh">${f(wA)}</div></div>
+            <div class="row" style="border-color:#eee"><div class="rd" style="color:#1c1c1e">${S.companies.B.name}</div><div class="rh">${f(wB)}</div></div>
+            <div style="margin-top:20px; padding-top:15px; border-top:2px solid #1c1c1e">
+                <div class="ml">累计总存余</div>
+                <div class="mv" style="color:#1c1c1e; font-size:32px">${f(b.A + b.B)}</div>
+            </div>
+        </div>`;
+}
+
+// 渲染：设置
+function rSet() {
+    document.getElementById('set-a').value = S.companies.A.name;
+    document.getElementById('set-b').value = S.companies.B.name;
+}
+
+function saveSet() {
+    S.companies.A.name = document.getElementById('set-a').value || '公司A';
+    S.companies.B.name = document.getElementById('set-b').value || '公司B';
+    persist(); toast('设置已保存');
+}
+
+// 初始化
+rCal();
 </script>
 </body>
 </html>
