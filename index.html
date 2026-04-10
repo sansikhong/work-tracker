@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="工时记录">
+<title>工时记录</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:#1c1c1e;color:#f2f2f7;min-height:100vh;padding-bottom:84px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#2c2c2e;border-top:0.5px solid #3a3a3c;padding:8px 0;padding-bottom:calc(8px + env(safe-area-inset-bottom));z-index:99}
+nav button{flex:1;background:none;border:none;color:#636366;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;cursor:pointer;font-family:inherit}
+nav button i{font-size:22px;font-style:normal;line-height:1.2}
+nav button.on{color:#1D9E75}
+.pg{display:none;padding:12px 12px 0}.pg.on{display:block}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.mc{background:#2c2c2e;border-radius:10px;padding:12px}
+.ml{font-size:11px;color:#636366;margin-bottom:3px}
+.mv{font-size:22px;font-weight:600}
+.gn .mv{color:#1D9E75}.am .mv{color:#EF9F27}
+.cd{background:#2c2c2e;border-radius:14px;padding:14px;margin-bottom:12px}
+.ct{font-size:11px;font-weight:600;color:#636366;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+label{font-size:12px;color:#8e8e93;display:block;margin-bottom:4px}
+input,select{width:100%;padding:10px 12px;border:0.5px solid #3a3a3c;border-radius:10px;font-size:16px;background:#3a3a3c;color:#f2f2f7;font-family:inherit;-webkit-appearance:none;appearance:none;margin-bottom:10px;outline:none}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{display:block;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px}
+.btn:active{opacity:.7}
+.bg{background:#1D9E75;color:#fff}
+.ba{background:#BA7517;color:#fff}
+.bb{background:#185FA5;color:#fff}
+.bk{background:#3a3a3c;color:#f2f2f7;margin-top:8px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:0.5px solid #3a3a3c}
+.row:last-child{border-bottom:none}
+.rm{font-size:11px;color:#636366;margin-bottom:2px}
+.rd{font-size:14px}
+.rh{font-size:15px;font-weight:600}
+.bx{display:inline-block;font-size:10px;padding:2px 7px;border-radius:8px;font-weight:500}
+.xa{background:#0a2e22;color:#1D9E75}.xb{background:#0a1f38;color:#378ADD}
+.xd{background:none;border:none;color:#555;font-size:18px;padding:4px 8px;cursor:pointer}
+.empty{text-align:center;padding:24px;color:#636366;font-size:13px}
+.pv{background:#3a3a3c;border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:13px;color:#8e8e93;line-height:1.7}
+.pv b{color:#f2f2f7}
+.cn{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.cn button{background:#3a3a3c;border:none;border-radius:8px;padding:7px 18px;color:#f2f2f7;font-size:18px;cursor:pointer}
+.cm{font-size:15px;font-weight:600}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.dw{font-size:10px;color:#636366;text-align:center;padding:3px 0;font-weight:500}
+.dy{border-radius:8px;padding:5px 3px 4px;min-height:54px;background:#3a3a3c;position:relative;overflow:hidden;cursor:pointer;touch-action:manipulation}
+.dy.em{background:none;pointer-events:none}
+.dy.td{border:1.5px solid #1D9E75}
+.dy.he{background:#2c2c2e;border:0.5px solid #444}
+.dn{font-size:11px;color:#8e8e93;line-height:1;margin-bottom:2px}
+.dh{font-size:10px;font-weight:600;color:#f2f2f7;line-height:1}
+.dd{display:flex;gap:2px;margin-top:2px}
+.da{width:5px;height:5px;border-radius:50%;background:#1D9E75}
+.db{width:5px;height:5px;border-radius:50%;background:#378ADD}
+.bb2{position:absolute;bottom:0;left:0;right:0;height:5px;background:#444}
+.bf{height:100%;border-radius:0 0 8px 8px}
+.lg{display:flex;gap:14px;margin-top:10px;font-size:11px;color:#636366;align-items:center}
+.ld{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:3px}
+.rb{background:#fff;border-radius:14px;padding:18px;color:#1a1a1a;margin-bottom:12px}
+.rh2{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #eee}
+.rt2{font-size:15px;font-weight:700;color:#1a1a1a}
+.rs{font-size:11px;color:#999;margin-top:2px}
+.rbig{font-size:24px;font-weight:700}
+.rst{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#bbb;margin-bottom:8px;font-weight:600}
+.rc{background:#f8f8f8;border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.rcn{font-size:13px;font-weight:700;margin-bottom:5px}
+.rkv{display:flex;justify-content:space-between;font-size:13px;padding:2px 0;color:#555}
+.rkv span:last-child{font-weight:600;color:#1a1a1a}
+.rbg{background:#ebebeb;border-radius:4px;height:6px;margin-top:6px}
+.rbf{height:6px;border-radius:4px}
+.rtot{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid #eee;margin-top:6px}
+.rtot span:first-child{font-size:14px;font-weight:600;color:#1a1a1a}
+.rtot span:last-child{font-size:17px;font-weight:700}
+.rft{text-align:center;font-size:10px;color:#ccc;margin-top:10px;padding-top:10px;border-top:1px solid #f5f5f5}
+#toast{position:fixed;top:24px;left:50%;transform:translateX(-50%);background:#1D9E75;color:#fff;padding:9px 20px;border-radius:20px;font-size:14px;font-weight:600;z-index:999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<div id="pg-cal" class="pg on">
+  <div class="mg">
+    <div class="mc gn"><div class="ml">本周工时</div><div class="mv" id="h-week">--</div></div>
+    <div class="mc am"><div class="ml">存余未发薪</div><div class="mv" id="h-saved">--</div></div>
+  </div>
+  <div class="cd">
+    <div class="cn">
+      <button onclick="calMove(-1)">‹</button>
+      <span class="cm" id="cal-label"></span>
+      <button onclick="calMove(1)">›</button>
+    </div>
+    <div class="cg" id="cal-grid"></div>
+    <div class="lg">
+      <span><div class="ld" style="background:#1D9E75"></div><span id="leg-a">公司A</span></span>
+      <span><div class="ld" style="background:#378ADD"></div><span id="leg-b">公司B</span></span>
+      <span style="margin-left:auto;color:#444;font-size:10px">满格=12h</span>
+    </div>
+  </div>
+  <div class="cd"><div class="ct">最近记录</div><div id="recent-list"><div class="empty">还没有记录</div></div></div>
+</div>
+
+<div id="pg-log" class="pg">
+  <div class="cd">
+    <div class="ct">添加工时</div>
+    <label>公司</label>
+    <select id="log-co"><option value="A" id="lopt-a">公司A</option><option value="B" id="lopt-b">公司B</option></select>
+    <div class="r2">
+      <div><label>日期</label><input type="date" id="log-date"></div>
+      <div><label>小时数</label><input type="number" id="log-hours" min="0.5" max="24" step="0.5" placeholder="0" inputmode="decimal"></div>
+    </div>
+    <label>备注（可选）</label>
+    <input type="text" id="log-note" placeholder="项目名称等">
+    <button class="btn bg" onclick="addEntry()">＋ 添加工时</button>
+  </div>
+  <div class="cd"><div class="ct">全部工时记录</div><div id="all-entries"><div class="empty">还没有记录</div></div></div>
+</div>
+
+<div id="pg-paid" class="pg">
+  <div class="cd">
+    <div class="ct">记录已发薪工时</div>
+    <label>公司</label>
+    <select id="p-co" onchange="upPrev()"><option value="A" id="popt-a">公司A</option><option value="B" id="popt-b">公司B</option></select>
+    <div class="r2">
+      <div><label>发薪工时</label><input type="number" id="p-hours" min="0.5" step="0.5" value="25" oninput="upPrev()" inputmode="decimal"></div>
+      <div><label>周次</label><input type="text" id="p-week" placeholder="2024-W15"></div>
+    </div>
+    <div class="pv" id="p-prev">选择公司查看存余</div>
+    <button class="btn ba" onclick="doPaid()">确认记录发薪</button>
+  </div>
+  <div class="cd"><div class="ct">发薪记录</div><div id="paid-list"><div class="empty">还没有发薪记录</div></div></div>
+</div>
+
+<div id="pg-rep" class="pg">
+  <div class="cd">
+    <div class="ct">生成周报</div>
+    <label>选择周次</label>
+    <select id="rep-week"></select>
+    <button class="btn bb" onclick="genReport()" style="margin-bottom:8px">生成预览</button>
+    <button class="btn bk" id="share-btn" style="display:none" onclick="shareReport()">分享给老板 ↗</button>
+  </div>
+  <div id="report-out"></div>
+</div>
+
+<div id="pg-set" class="pg">
+  <div class="cd">
+    <div class="ct">公司名称</div>
+    <label>公司 A</label><input type="text" id="set-a" placeholder="公司A">
+    <label>公司 B</label><input type="text" id="set-b" placeholder="公司B">
+    <button class="btn bg" onclick="saveSet()">保存设置</button>
+  </div>
+</div>
+
+<nav>
+  <button class="on" onclick="goPage('cal',this)"><i>📅</i><span>日历</span></button>
+  <button onclick="goPage('log',this)"><i>⏱</i><span>记工时</span></button>
+  <button onclick="goPage('paid',this)"><i>💰</i><span>记发薪</span></button>
+  <button onclick="goPage('rep',this)"><i>📊</i><span>周报</span></button>
+  <button onclick="goPage('set',this)"><i>⚙️</i><span>设置</span></button>
+</nav>
+
+<script>
+const SK='wt6'
+let S=JSON.parse(localStorage.getItem(SK)||'{"companies":{"A":{"name":"公司A"},"B":{"name":"公司B"}},"entries":[],"payments":[]}')
+let calY,calM,lastReport=''
+
+const f=h=>(h%1===0?h:h.toFixed(1))+'h'
+const wkOf=ds=>{const d=new Date(ds+'T00:00:00'),y=d.getFullYear(),s=new Date(y,0,1);return y+'-W'+String(Math.ceil(((d-s)/86400000+s.getDay()+1)/7)).padStart(2,'0')}
+const today=()=>new Date().toISOString().split('T')[0]
+const thiswk=()=>wkOf(today())
+const sv=()=>{const t={A:0,B:0},p={A:0,B:0};S.entries.forEach(e=>t[e.co]=(t[e.co]||0)+e.hours);S.payments.forEach(x=>p[x.co]=(p[x.co]||0)+x.hours);return{A:Math.max(0,(t.A||0)-(p.A||0)),B:Math.max(0,(t.B||0)-(p.B||0))}}
+const persist=()=>localStorage.setItem(SK,JSON.stringify(S))
+
+function toast(m,ok=true){
+  const t=document.getElementById('toast')
+  t.textContent=m;t.style.background=ok?'#1D9E75':'#c0392b'
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)
+}
+
+function goPage(id,btn){
+  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'))
+  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'))
+  document.getElementById('pg-'+id).classList.add('on')
+  btn.classList.add('on')
+  if(id==='cal')rCal()
+  if(id==='log')rLog()
+  if(id==='paid')rPaid()
+  if(id==='rep')rRep()
+  if(id==='set')rSet()
+}
+
+function rCal(){
+  const b=sv(),w=thiswk();let wh=0
+  S.entries.filter(e=>wkOf(e.date)===w).forEach(e=>wh+=e.hours)
+  document.getElementById('h-week').textContent=f(wh)
+  document.getElementById('h-saved').textContent=f(b.A+b.B)
+  document.getElementById('leg-a').textContent=S.companies.A.name
+  document.getElementById('leg-b').textContent=S.companies.B.name
+  const now=new Date()
+  if(calY===undefined){calY=now.getFullYear();calM=now.getMonth()}
+  const MN=['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']
+  document.getElementById('cal-label').textContent=calY+'年 '+MN[calM]
+  const fd=new Date(calY,calM,1).getDay(),dim=new Date(calY,calM+1,0).getDate(),tod=today()
+  const dm={}
+  S.entries.forEach(e=>{
+    const p=e.date.split('-')
+    if(+p[0]===calY&&+p[1]-1===calM){
+      if(!dm[e.date])dm[e.date]={A:0,B:0}
+      dm[e.date][e.co]=(dm[e.date][e.co]||0)+e.hours
+    }
+  })
+  const g=document.getElementById('cal-grid')
+  g.innerHTML=['日','一','二','三','四','五','六'].map(d=>'<div class="dw">'+d+'</div>').join('')
+  for(let i=0;i<fd;i++)g.innerHTML+='<div class="dy em"></div>'
+  for(let d=1;d<=dim;d++){
+    const ds=calY+'-'+String(calM+1).padStart(2,'0')+'-'+String(d).padStart(2,'0')
+    const inf=dm[ds]||{A:0,B:0},tot=+(inf.A+inf.B).toFixed(1)
+    const pct=Math.min(100,Math.round((tot/12)*100))
+    const hasA=inf.A>0,hasB=inf.B>0
+    const bc=hasA&&hasB?'linear-gradient(90deg,#1D9E75 50%,#378ADD 50%)':hasB?'#378ADD':'#1D9E75'
+    const cls='dy'+(tot>0?' he':'')+(ds===tod?' td':'')
+    g.innerHTML+='<div class="'+cls+'" onclick="calClick(\''+ds+'\')">'
+      +'<div class="dn">'+d+'</div>'
+      +(tot>0?'<div class="dh">'+f(tot)+'</div>':'')
+      +'<div class="dd">'+(hasA?'<div class="da"></div>':'')+(hasB?'<div class="db"></div>':'')+'</div>'
+      +'<div class="bb2"><div class="bf" style="width:'+pct+'%;background:'+bc+'"></div></div>'
+      +'</div>'
+  }
+  const rec=[...S.entries].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,4)
+  const el=document.getElementById('recent-list')
+  el.innerHTML=rec.length?rec.map(e=>'<div class="row">'
+    +'<div><div class="rm">'+e.date+' <span class="bx x'+e.co.toLowerCase()+'">'+S.companies[e.co].name+'</span></div>'
+    +'<div class="rd">'+(e.note||'工作')+'</div></div>'
+    +'<div class="rh">'+f(e.hours)+'</div></div>').join(''):'<div class="empty">还没有记录</div>'
+}
+function calClick(ds){document.getElementById('log-date').value=ds;document.querySelector('nav button:nth-child(2)').click()}
+function calMove(dir){calM+=dir;if(calM>11){calM=0;calY++}if(calM<0){calM=11;calY--}rCal()}
+
+function rLog(){
+  document.getElementById('lopt-a').textContent=S.companies.A.name
+  document.getElementById('lopt-b').textContent=S.companies.B.name
+  if(!document.getElementById('log-date').value)document.getElementById('log-date').value=today()
+  const all=[...S.entries].sort((a,b)=>b.date.localeCompare(a.date))
+  document.getElementById('all-entries').innerHTML=all.length?all.map(e=>{
+    const i=S.entries.indexOf(e)
+    return'<div class="row">'
+      +'<div><div class="rm">'+e.date+' <span class="bx x'+e.co.toLowerCase()+'">'+S.companies[e.co].name+'</span></div>'
+      +'<div class="rd">'+(e.note||'工作')+'</div></div>'
+      +'<div style="display:flex;align-items:center;gap:4px"><span class="rh">'+f(e.hours)+'</span>'
+      +'<button class="xd" onclick="delE('+i+')">✕</button></div></div>'
+  }).join(''):'<div class="empty">还没有记录</div>'
+}
+function addEntry(){
+  const co=document.getElementById('log-co').value
+  const date=document.getElementById('log-date').value
+  const hours=parseFloat(document.getElementById('log-hours').value)
+  const note=document.getElementById('log-note').value.trim()
+  if(!date||isNaN(hours)||hours<=0){toast('请填写日期和工时',false);return}
+  S.entries.push({co,date,hours,note,id:Date.now()})
+  persist();rLog();rCal()
+  document.getElementById('log-hours').value=''
+  document.getElementById('log-note').value=''
+  toast('已保存 ✓')
+}
+function delE(i){S.entries.splice(i,1);persist();rLog();rCal();toast('已删除')}
+
+function upPrev(){
+  const co=document.getElementById('p-co').value,b=sv()
+  const s=co==='A'?b.A:b.B
+  const wh=parseFloat(document.getElementById('p-hours').value)||0
+  document.getElementById('p-prev').innerHTML='<b>'+S.companies[co].name+'</b> 存余：<b>'+f(s)+'</b><br>本次：<b>'+f(wh)+'</b> → 剩余：<b>'+f(Math.max(0,s-wh))+'</b>'
+}
+function rPaid(){
+  document.getElementById('popt-a').textContent=S.companies.A.name
+  document.getElementById('popt-b').textContent=S.companies.B.name
+  if(!document.getElementById('p-week').value)document.getElementById('p-week').value=thiswk()
+  upPrev()
+  const all=[...S.payments].sort((a,b)=>b.week.localeCompare(a.week))
+  document.getElementById('paid-list').innerHTML=all.length?all.map(p=>{
+    const i=S.payments.indexOf(p)
+    return'<div class="row">'
+      +'<div><div class="rm">'+p.week+' <span class="bx x'+p.co.toLowerCase()+'">'+S.companies[p.co].name+'</span></div></div>'
+      +'<div style="display:flex;align-items:center;gap:4px"><span class="rh">'+f(p.hours)+'</span>'
+      +'<button class="xd" onclick="delP('+i+')">✕</button></div></div>'
+  }).join(''):'<div class="empty">还没有发薪记录</div>'
+}
+function doPaid(){
+  const co=document.getElementById('p-co').value
+  const hours=parseFloat(document.getElementById('p-hours').value)
+  const week=document.getElementById('p-week').value.trim()||thiswk()
+  const b=sv(),s=co==='A'?b.A:b.B
+  if(isNaN(hours)||hours<=0){toast('请输入工时',false);return}
+  if(hours>s+0.01){toast('存余不足！当前 '+f(s),false);return}
+  S.payments.push({co,hours,week,id:Date.now()})
+  persist();rPaid();toast('已记录 ✓')
+}
+function delP(i){S.payments.splice(i,1);persist();rPaid();toast('已删除')}
+
+function rRep(){
+  const weeks=new Set([thiswk()])
+  S.entries.forEach(e=>weeks.add(wkOf(e.date)))
+  S.payments.forEach(p=>weeks.add(p.week))
+  document.getElementById('rep-week').innerHTML=[...weeks].sort().reverse().map(w=>'<option value="'+w+'">'+w+'</option>').join('')
+}
+function genReport(){
+  const week=document.getElementById('rep-week').value
+  const nA=S.companies.A.name,nB=S.companies.B.name
+  let wA=0,wB=0,pA=0,pB=0
+  S.entries.filter(e=>wkOf(e.date)===week).forEach(e=>e.co==='A'?wA+=e.hours:wB+=e.hours)
+  S.payments.filter(p=>p.week===week).forEach(p=>p.co==='A'?pA+=p.hours:pB+=p.hours)
+  const b=sv(),mh=Math.max(wA,wB,0.1)
+  const bar=(v,c)=>'<div class="rbg"><div class="rbf" style="width:'+Math.round((v/mh)*100)+'%;background:'+c+'"></div></div>'
+  lastReport='📋 工时周报 · '+week+'\n'+'─'.repeat(22)+'\n【本周工时】\n'+nA+'：'+f(wA)+'\n'+nB+'：'+f(wB)+'\n合计：'+f(wA+wB)+'\n\n【发薪情况】\n'+nA+' 发薪：'+f(pA)+'\n'+nB+' 发薪：'+f(pB)+'\n合计发薪：'+f(pA+pB)+'\n\n【累计存余】\n'+nA+'：'+f(b.A)+'\n'+nB+'：'+f(b.B)+'\n合计存余：'+f(b.A+b.B)+'\n'+'─'.repeat(22)+'\n'+new Date().toLocaleDateString('zh-CN')
+  document.getElementById('report-out').innerHTML='<div class="rb">'
+    +'<div class="rh2"><div><div class="rt2">工时周报</div><div class="rs">'+week+'</div></div><div class="rbig">'+f(wA+wB)+'</div></div>'
+    +'<div style="margin-bottom:12px"><div class="rst">本周工时</div>'
+    +'<div class="rc"><div class="rcn" style="color:#0F6E56">'+nA+'</div><div class="rkv"><span>工作工时</span><span>'+f(wA)+'</span></div>'+bar(wA,'#1D9E75')+'</div>'
+    +'<div class="rc"><div class="rcn" style="color:#185FA5">'+nB+'</div><div class="rkv"><span>工作工时</span><span>'+f(wB)+'</span></div>'+bar(wB,'#378ADD')+'</div></div>'
+    +'<div style="margin-bottom:12px"><div class="rst">发薪情况</div>'
+    +'<div class="rkv"><span>'+nA+' 发薪</span><span>'+f(pA)+'</span></div>'
+    +'<div class="rkv"><span>'+nB+' 发薪</span><span>'+f(pB)+'</span></div>'
+    +'<div class="rtot"><span>合计发薪</span><span style="color:#BA7517">'+f(pA+pB)+'</span></div></div>'
+    +'<div><div class="rst">累计存余（截至今日）</div>'
+    +'<div class="rkv"><span>'+nA+'</span><span style="color:#0F6E56">'+f(b.A)+'</span></div>'
+    +'<div class="rkv"><span>'+nB+'</span><span style="color:#185FA5">'+f(b.B)+'</span></div>'
+    +'<div class="rtot"><span>合计存余</span><span style="color:#BA7517">'+f(b.A+b.B)+'</span></div></div>'
+    +'<div class="rft">生成于 '+new Date().toLocaleDateString('zh-CN')+'</div></div>'
+  document.getElementById('share-btn').style.display='block'
+}
+function shareReport(){
+  if(navigator.share){navigator.share({title:'工时周报',text:lastReport})}
+  else{navigator.clipboard&&navigator.clipboard.writeText(lastReport).then(()=>toast('已复制，可粘贴发送'))}
+}
+
+function rSet(){
+  document.getElementById('set-a').value=S.companies.A.name
+  document.getElementById('set-b').value=S.companies.B.name
+}
+function saveSet(){
+  const a=document.getElementById('set-a').value.trim(),b=document.getElementById('set-b').value.trim()
+  if(a)S.companies.A.name=a
+  if(b)S.companies.B.name=b
+  persist();toast('已保存 ✓')
+}
+
+const n=new Date();calY=n.getFullYear();calM=n.getMonth()
+rCal()
+</script>
+</body>
+</html>
