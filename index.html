@@ -258,7 +258,14 @@ function rCal(){
   const el=document.getElementById('recent-list')
   el.innerHTML=rec.length?rec.map(e=>'<div class="row">'
     +'<div><div class="rm">'+e.date+' <span class="bx x'+e.co.toLowerCase()+'">'+S.companies[e.co].name+'</span></div>'
-    +'<div class="rd">'+(e.note||'工作')+'</div></div>'
+   +'<div class="rd">'
+  +(e.note||'工作')
+  +(e.inTime && e.outTime 
+    ? '<div style="font-size:11px;color:#8e8e93;margin-top:2px">'
+        + e.inTime + ' - ' + e.outTime +
+      '</div>' 
+    : '')
++'</div></div>'
     +'<div class="rh">'+f(e.hours)+'</div></div>').join(''):'<div class="empty">还没有记录</div>'
 }
 function calClick(ds){document.getElementById('log-date').value=ds;document.querySelector('nav button:nth-child(2)').click()}
@@ -273,7 +280,14 @@ function rLog(){
     const i=S.entries.indexOf(e)
     return'<div class="row">'
       +'<div><div class="rm">'+e.date+' <span class="bx x'+e.co.toLowerCase()+'">'+S.companies[e.co].name+'</span></div>'
-      +'<div class="rd">'+(e.note||'工作')+'</div></div>'
+      +'<div class="rd">'
+  +(e.note||'工作')
+  +(e.inTime && e.outTime 
+    ? '<div style="font-size:11px;color:#8e8e93;margin-top:2px">'
+        + e.inTime + ' - ' + e.outTime +
+      '</div>' 
+    : '')
++'</div></div>'
       +'<div style="display:flex;align-items:center;gap:4px"><span class="rh">'+f(e.hours)+'</span>'
       +'<button class="xd" onclick="delE('+i+')">✕</button></div></div>'
   }).join(''):'<div class="empty">还没有记录</div>'
@@ -284,7 +298,19 @@ function addEntry(){
   const hours=parseFloat(document.getElementById('log-hours').value)
   const note=document.getElementById('log-note').value.trim()
   if(!date||isNaN(hours)||hours<=0){toast('请填写日期和工时',false);return}
-  S.entries.push({co,date,hours,note,id:Date.now()})
+  
+  const inTime = document.getElementById('log-in').value
+const outTime = document.getElementById('log-out').value
+
+S.entries.push({
+  co,
+  date,
+  hours,
+  note,
+  inTime,
+  outTime,
+  id: Date.now()
+})
   persist();rLog();rCal()
   document.getElementById('log-hours').value=''
   document.getElementById('log-note').value=''
