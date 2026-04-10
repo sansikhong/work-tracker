@@ -290,22 +290,33 @@ function rLog(){
   document.getElementById('lopt-a').textContent=S.companies.A.name
   document.getElementById('lopt-b').textContent=S.companies.B.name
   if(!document.getElementById('log-date').value)document.getElementById('log-date').value=today()
+  
   const all=[...S.entries].sort((a,b)=>b.date.localeCompare(a.date))
-  document.getElementById('all-entries').innerHTML=all.length?all.map(e=>{
-    const i=S.entries.indexOf(e)
-    return'<div class="row">'
-      +'<div><div class="rm">'+e.date+' <span class="bx x'+e.co.toLowerCase()+'">'+S.companies[e.co].name+'</span></div>'
-      +'<div class="rd">'
-  +(e.note||'工作')
-  +(e.inTime && e.outTime 
-    ? '<div style="font-size:11px;color:#8e8e93;margin-top:2px">'
-        + e.inTime + ' - ' + e.outTime +
-      '</div>' 
-    : '')
-+'</div></div>'
-      +'<div style="display:flex;align-items:center;gap:4px"><span class="rh">'+f(e.hours)+'</span>'
-      +'<button class="xd" onclick="delE('+i+')">✕</button></div></div>'
-  }).join(''):'<div class="empty">还没有记录</div>'
+  const el = document.getElementById('all-entries');
+  
+  if (all.length === 0) {
+    el.innerHTML = '<div class="empty">还没有记录</div>';
+    return;
+  }
+
+  el.innerHTML = all.map((e, index) => {
+    // 找到该条目在原数组中的真实索引，以便删除
+    const realIndex = S.entries.findIndex(x => x.id === e.id); 
+    return `
+      <div class="row">
+        <div>
+          <div class="rm">${e.date} <span class="bx x${e.co.toLowerCase()}">${S.companies[e.co].name}</span></div>
+          <div class="rd">
+            ${e.note || '工作'}
+            ${(e.inTime && e.outTime) ? `<div style="font-size:11px;color:#636366;margin-top:2px">${e.inTime} - ${e.outTime}</div>` : ''}
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span class="rh">${f(e.hours)}</span>
+          <button class="xd" onclick="delE(${realIndex})">✕</button>
+        </div>
+      </div>`;
+  }).join('');
 }
 function addEntry(){
   const co=document.getElementById('log-co').value
