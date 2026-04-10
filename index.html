@@ -105,20 +105,44 @@ input,select{width:100%;padding:10px 12px;border:0.5px solid #3a3a3c;border-radi
 </div>
 
 <div id="pg-log" class="pg">
-  <div class="cd">
-    <div class="ct">添加工时</div>
-    <label>公司</label>
-    <select id="log-co"><option value="A" id="lopt-a">公司A</option><option value="B" id="lopt-b">公司B</option></select>
-    <div class="r2">
-      <div><label>日期</label><input type="date" id="log-date"></div>
-      <div><label>小时数</label><input type="number" id="log-hours" min="0.5" max="24" step="0.5" placeholder="0" inputmode="decimal"></div>
+     <div class="cd">
+      <div class="ct">添加工时</div>
+      <label>公司</label>
+      <select id="log-co"><option value="A" id="lopt-a">公司A</option><option value="B" id="lopt-b">公司B</option></select>
+      <div class="r2">
+        <div><label>日期</label><input type="date" id="log-date"></div>
+        <div><label>小时数</label><input type="number" id="log-hours" min="0.5" max="24" step="0.5" placeholder="0" inputmode="decimal"></div>
+      </div>
+
+      <!-- 打卡区域 -->
+      <div style="background:#3a3a3c;border-radius:10px;padding:12px;margin-bottom:10px">
+        <div style="font-size:11px;font-weight:600;color:#636366;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">打卡计时</div>
+        <div class="r2" style="margin-bottom:8px">
+          <div>
+            <label>上班时间</label>
+            <input type="time" id="log-in" style="margin-bottom:0" onchange="calcHours()">
+          </div>
+          <div>
+            <label>下班时间</label>
+            <input type="time" id="log-out" style="margin-bottom:0" onchange="calcHours()">
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <button class="btn" style="background:#2c2c2e;color:#1D9E75;border:0.5px solid #1D9E75;margin-top:0;padding:10px;font-size:14px" onclick="stampIn()">▶ 现在上班</button>
+          <button class="btn" style="background:#2c2c2e;color:#EF9F27;border:0.5px solid #EF9F27;margin-top:0;padding:10px;font-size:14px" onclick="stampOut()">■ 现在下班</button>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:#636366">计算工时</span>
+          <span id="calc-result" style="font-size:16px;font-weight:600;color:#f2f2f7">--</span>
+          <button class="btn" style="width:auto;padding:8px 14px;margin-top:0;font-size:13px;background:#185FA5;color:#fff" onclick="applyCalc()">填入 ↑</button>
+        </div>
+      </div>
+
+      <label>备注（可选）</label>
+      <input type="text" id="log-note" placeholder="项目名称等">
+      <button class="btn bg" onclick="addEntry()">＋ 添加工时</button>
     </div>
-    <label>备注（可选）</label>
-    <input type="text" id="log-note" placeholder="项目名称等">
-    <button class="btn bg" onclick="addEntry()">＋ 添加工时</button>
-  </div>
-  <div class="cd"><div class="ct">全部工时记录</div><div id="all-entries"><div class="empty">还没有记录</div></div></div>
-</div>
+
 
 <div id="pg-paid" class="pg">
   <div class="cd">
@@ -346,7 +370,35 @@ function saveSet(){
   if(b)S.companies.B.name=b
   persist();toast('已保存 ✓')
 }
-
+function stampIn(){
+  const now=new Date()
+  document.getElementById('log-in').value=now.toTimeString().slice(0,5)
+  calcHours()
+}
+function stampOut(){
+  const now=new Date()
+  document.getElementById('log-out').value=now.toTimeString().slice(0,5)
+  calcHours()
+}
+function calcHours(){
+  const i=document.getElementById('log-in').value
+  const o=document.getElementById('log-out').value
+  if(!i||!o){document.getElementById('calc-result').textContent='--';return}
+  const [ih,im]=i.split(':').map(Number)
+  const [oh,om]=o.split(':').map(Number)
+  let mins=(oh*60+om)-(ih*60+im)
+  if(mins<=0){document.getElementById('calc-result').textContent='时间有误';return}
+  const h=+(mins/60).toFixed(2)
+  document.getElementById('calc-result').textContent=f(h)
+}
+function applyCalc(){
+  const r=document.getElementById('calc-result').textContent
+  if(r==='--'||r==='时间有误'){toast('请先设置上下班时间',false);return}
+  const val=parseFloat(r)
+  document.getElementById('log-hours').value=Math.round(val*2)/2
+  toast('已填入 '+f(Math.round(val*2)/2))
+}
+  
 const n=new Date();calY=n.getFullYear();calM=n.getMonth()
 rCal()
 </script>
