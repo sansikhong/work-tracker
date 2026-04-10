@@ -8,14 +8,14 @@
 <title>工时记录 Pro</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:#1c1c1e;color:#f2f2f7;min-height:100vh;padding-bottom:90px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:#1c1c1e;color:#f2f2f7;min-height:100vh;padding-bottom:calc(90px + env(safe-area-inset-bottom));padding-top:max(env(safe-area-inset-top), 16px)}
 
 nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:rgba(44,44,46,0.95);backdrop-filter:blur(10px);border-top:0.5px solid #3a3a3c;padding-bottom:env(safe-area-inset-bottom);z-index:99}
 nav button{flex:1;background:none;border:none;color:#8e8e93;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0;cursor:pointer}
 nav button i{font-size:20px;font-style:normal}
 nav button.on{color:#1D9E75}
 
-.pg{display:none;padding:12px;animation:fadeIn 0.2s ease-out}
+.pg{display:none;padding:16px 12px 12px;animation:fadeIn 0.2s ease-out}
 .pg.on{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
@@ -30,9 +30,11 @@ nav button.on{color:#1D9E75}
 .ml{font-size:11px;color:#8e8e93}
 
 label{font-size:12px;color:#8e8e93;display:block;margin-bottom:6px;padding-left:2px}
-input,select{width:100%;padding:12px;border:none;border-radius:10px;font-size:16px;background:#3a3a3c;color:#fff;margin-bottom:12px;outline:none;font-family:inherit}
+input,select{width:100%;padding:12px;border:none;border-radius:10px;font-size:16px;background:#3a3a3c;color:#fff;margin-bottom:0;outline:none;font-family:inherit;-webkit-appearance:none;appearance:none}
 input::placeholder{color:#636366}
-.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{margin-bottom:14px}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.r2 .field{margin-bottom:0}
 
 .btn{display:block;width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:opacity 0.1s}
 .btn:active{opacity:0.6}
@@ -115,17 +117,17 @@ input::placeholder{color:#636366}
 
         <!-- 打卡模式 -->
         <div class="mode-panel on" id="panel-clock">
-            <div class="r2" style="margin-bottom:8px">
-                <div>
+            <div class="r2">
+                <div class="field">
                     <label>上班时间</label>
                     <input type="time" id="log-in" onchange="calcHours()">
                 </div>
-                <div>
+                <div class="field">
                     <label>下班时间</label>
                     <input type="time" id="log-out" onchange="calcHours()">
                 </div>
             </div>
-            <div class="r2" style="margin-bottom:12px">
+            <div class="r2">
                 <button class="btn bk" style="font-size:14px" onclick="stampIn()">▶ 记上班</button>
                 <button class="btn bk" style="font-size:14px" onclick="stampOut()">■ 记下班</button>
             </div>
@@ -145,14 +147,18 @@ input::placeholder{color:#636366}
 
     <div class="cd">
         <div class="ct">添加记录</div>
-        <label>公司</label>
-        <select id="log-co"></select>
-        <div class="r2">
-            <div><label>日期</label><input type="date" id="log-date"></div>
-            <div><label>工时数 (小时)</label><input type="number" id="log-hours" step="0.5" min="0" placeholder="0.0"></div>
+        <div class="field">
+            <label>公司</label>
+            <select id="log-co"></select>
         </div>
-        <label>备注 (项目/内容)</label>
-        <input type="text" id="log-note" placeholder="选填...">
+        <div class="r2">
+            <div class="field"><label>日期</label><input type="date" id="log-date"></div>
+            <div class="field"><label>工时数 (小时)</label><input type="number" id="log-hours" step="0.5" min="0" placeholder="0.0"></div>
+        </div>
+        <div class="field">
+            <label>备注 (项目/内容)</label>
+            <input type="text" id="log-note" placeholder="选填...">
+        </div>
         <button class="btn bg" onclick="addEntry()">＋ 保存记录</button>
     </div>
 
@@ -165,10 +171,12 @@ input::placeholder{color:#636366}
 <div id="pg-paid" class="pg">
     <div class="cd">
         <div class="ct">记录发薪</div>
-        <select id="p-co" onchange="upPrev()"></select>
+        <div class="field">
+            <select id="p-co" onchange="upPrev()"></select>
+        </div>
         <div class="r2">
-            <div><label>核销工时</label><input type="number" id="p-hours" step="0.5" min="0" oninput="upPrev()"></div>
-            <div><label>周次</label><input type="text" id="p-week"></div>
+            <div class="field"><label>核销工时</label><input type="number" id="p-hours" step="0.5" min="0" oninput="upPrev()"></div>
+            <div class="field"><label>周次</label><input type="text" id="p-week"></div>
         </div>
         <div id="p-prev" style="font-size:13px;color:#8e8e93;margin-bottom:15px;line-height:1.8;background:rgba(0,0,0,0.2);padding:10px;border-radius:8px"></div>
         <button class="btn ba" onclick="doPaid()">确认核销存余</button>
@@ -188,8 +196,8 @@ input::placeholder{color:#636366}
 <div id="pg-set" class="pg">
     <div class="cd">
         <div class="ct">基础设置</div>
-        <label>公司 A 名称</label><input type="text" id="set-a">
-        <label>公司 B 名称</label><input type="text" id="set-b">
+        <div class="field"><label>公司 A 名称</label><input type="text" id="set-a"></div>
+        <div class="field"><label>公司 B 名称</label><input type="text" id="set-b"></div>
         <button class="btn bg" onclick="saveSet()">保存更改</button>
     </div>
     <div class="cd">
