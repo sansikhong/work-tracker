@@ -1,78 +1,86 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>工时记录 Pro</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; background: #1c1c1e; color: #f2f2f7; min-height: 100vh; padding-bottom: 90px; }
-        
-        /* 导航栏 */
-        nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; background: rgba(44, 44, 46, 0.95); backdrop-filter: blur(10px); border-top: 0.5px solid #3a3a3c; padding-bottom: env(safe-area-inset-bottom); z-index: 99; }
-        nav button { flex: 1; background: none; border: none; color: #8e8e93; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 0; cursor: pointer; }
-        nav button i { font-size: 20px; font-style: normal; }
-        nav button.on { color: #1D9E75; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>工时记录 Pro</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:#1c1c1e;color:#f2f2f7;min-height:100vh;padding-bottom:90px}
 
-        /* 通用组件 */
-        .pg { display: none; padding: 12px; animation: fadeIn 0.2s ease-out; }
-        .pg.on { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .cd { background: #2c2c2e; border-radius: 14px; padding: 16px; margin-bottom: 12px; }
-        .ct { font-size: 12px; font-weight: 600; color: #8e8e93; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        .mg { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .mc { background: #2c2c2e; border-radius: 14px; padding: 12px; }
-        .mv { font-size: 24px; font-weight: 700; margin-top: 4px; }
-        .gn .mv { color: #1D9E75; }
-        .am .mv { color: #EF9F27; }
-        .ml { font-size: 11px; color: #8e8e93; }
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:rgba(44,44,46,0.95);backdrop-filter:blur(10px);border-top:0.5px solid #3a3a3c;padding-bottom:env(safe-area-inset-bottom);z-index:99}
+nav button{flex:1;background:none;border:none;color:#8e8e93;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0;cursor:pointer}
+nav button i{font-size:20px;font-style:normal}
+nav button.on{color:#1D9E75}
 
-        /* 表单元素 */
-        label { font-size: 12px; color: #8e8e93; display: block; margin-bottom: 6px; padding-left: 2px; }
-        input, select { width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 16px; background: #3a3a3c; color: #fff; margin-bottom: 12px; outline: none; font-family: inherit; }
-        .r2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        
-        .btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 0.1s; }
-        .btn:active { opacity: 0.6; }
-        .bg { background: #1D9E75; color: #fff; }
-        .ba { background: #BA7517; color: #fff; }
-        .bb { background: #185FA5; color: #fff; }
-        .bk { background: #3a3a3c; color: #f2f2f7; }
+.pg{display:none;padding:12px;animation:fadeIn 0.2s ease-out}
+.pg.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
-        /* 列表项 */
-        .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 0.5px solid #3a3a3c; }
-        .row:last-child { border-bottom: none; }
-        .rm { font-size: 11px; color: #8e8e93; margin-bottom: 4px; }
-        .rd { font-size: 15px; color: #f2f2f7; }
-        .rh { font-size: 16px; font-weight: 600; }
-        .bx { font-size: 10px; padding: 2px 6px; border-radius: 6px; margin-left: 4px; font-weight: 600; }
-        .xa { background: rgba(29,158,117,0.2); color: #1D9E75; }
-        .xb { background: rgba(55,138,221,0.2); color: #378ADD; }
-        .xd { background: none; border: none; color: #ff453a; font-size: 18px; padding: 8px; cursor: pointer; }
+.cd{background:#2c2c2e;border-radius:14px;padding:16px;margin-bottom:12px}
+.ct{font-size:12px;font-weight:600;color:#8e8e93;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px}
 
-        /* 日历部分 */
-        .cn { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .cn button { background: #3a3a3c; border: none; border-radius: 8px; width: 36px; height: 36px; color: #fff; font-size: 20px; }
-        .cg { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-        .dw { font-size: 10px; color: #636366; text-align: center; padding-bottom: 5px; }
-        .dy { border-radius: 10px; padding: 6px 4px; min-height: 50px; background: #3a3a3c; position: relative; text-align: center; cursor: pointer; }
-        .dy.em { background: none; pointer-events: none; }
-        .dy.td { border: 1.5px solid #1D9E75; }
-        .dy.he { background: #2c2c2e; box-shadow: inset 0 0 0 0.5px #444; }
-        .dn { font-size: 12px; color: #8e8e93; margin-bottom: 2px; }
-        .dh { font-size: 10px; font-weight: 700; color: #fff; }
-        .bb2 { position: absolute; bottom: 4px; left: 6px; right: 6px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
-        .bf { height: 100%; transition: width 0.3s; }
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.mc{background:#2c2c2e;border-radius:14px;padding:12px}
+.mv{font-size:24px;font-weight:700;margin-top:4px}
+.gn .mv{color:#1D9E75}
+.am .mv{color:#EF9F27}
+.ml{font-size:11px;color:#8e8e93}
 
-        /* Toast */
-        #toast { position: fixed; top: 40px; left: 50%; transform: translateX(-50%); background: #1D9E75; color: #fff; padding: 10px 24px; border-radius: 25px; font-size: 14px; font-weight: 600; z-index: 1000; opacity: 0; transition: 0.3s; pointer-events: none; }
-        #toast.show { opacity: 1; transform: translateX(-50%) translateY(10px); }
-        .empty { text-align: center; padding: 30px; color: #636366; font-size: 14px; }
-    </style>
+label{font-size:12px;color:#8e8e93;display:block;margin-bottom:6px;padding-left:2px}
+input,select{width:100%;padding:12px;border:none;border-radius:10px;font-size:16px;background:#3a3a3c;color:#fff;margin-bottom:12px;outline:none;font-family:inherit}
+input::placeholder{color:#636366}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{display:block;width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:opacity 0.1s}
+.btn:active{opacity:0.6}
+.bg{background:#1D9E75;color:#fff}
+.ba{background:#BA7517;color:#fff}
+.bb{background:#185FA5;color:#fff}
+.bk{background:#3a3a3c;color:#f2f2f7}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:10px;width:auto}
+
+.row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:0.5px solid #3a3a3c}
+.row:last-child{border-bottom:none}
+.rm{font-size:11px;color:#8e8e93;margin-bottom:4px}
+.rd{font-size:15px;color:#f2f2f7}
+.rh{font-size:16px;font-weight:600}
+.bx{font-size:10px;padding:2px 6px;border-radius:6px;margin-left:4px;font-weight:600}
+.xa{background:rgba(29,158,117,0.2);color:#1D9E75}
+.xb{background:rgba(55,138,221,0.2);color:#378ADD}
+.xd{font-size:10px;padding:0;border:none;background:rgba(255,69,58,0.15);color:#ff453a;border-radius:6px;padding:4px 8px;cursor:pointer;font-weight:600}
+
+.cn{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.cn button{background:#3a3a3c;border:none;border-radius:8px;width:36px;height:36px;color:#fff;font-size:20px}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.dw{font-size:10px;color:#636366;text-align:center;padding-bottom:5px}
+.dy{border-radius:10px;padding:6px 4px;min-height:50px;background:#3a3a3c;position:relative;text-align:center;cursor:pointer}
+.dy.em{background:none;pointer-events:none}
+.dy.td{border:1.5px solid #1D9E75}
+.dy.he{background:#2c2c2e;box-shadow:inset 0 0 0 0.5px #444}
+.dn{font-size:12px;color:#8e8e93;margin-bottom:2px}
+.dh{font-size:10px;font-weight:700;color:#fff}
+.bb2{position:absolute;bottom:4px;left:6px;right:6px;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden}
+.bf{height:100%;transition:width 0.3s}
+
+/* 模式切换标签 */
+.tabs{display:flex;background:#3a3a3c;border-radius:10px;padding:3px;margin-bottom:16px;gap:3px}
+.tab{flex:1;padding:8px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;background:none;color:#8e8e93}
+.tab.on{background:#2c2c2e;color:#f2f2f7}
+
+/* 计算结果区 */
+.calc-bar{display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.25);padding:12px;border-radius:10px;margin-bottom:12px}
+
+#toast{position:fixed;top:40px;left:50%;transform:translateX(-50%);background:#1D9E75;color:#fff;padding:10px 24px;border-radius:25px;font-size:14px;font-weight:600;z-index:1000;opacity:0;transition:0.3s;pointer-events:none}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(10px)}
+.empty{text-align:center;padding:30px;color:#636366;font-size:14px}
+
+/* 模式面板 */
+.mode-panel{display:none}
+.mode-panel.on{display:block}
+</style>
 </head>
 <body>
 
@@ -99,44 +107,57 @@
 
 <div id="pg-log" class="pg">
     <div class="cd">
-        <div class="ct">快速打卡</div>
-        <div class="r2" style="margin-bottom:12px">
-            <div>
-                <label>上班时间</label>
-                <input type="time" id="log-in" onchange="calcHours()">
+        <div class="ct">工时输入方式</div>
+        <div class="tabs">
+            <button class="tab on" id="tab-clock" onclick="switchMode('clock')">⏱ 打卡计算</button>
+            <button class="tab" id="tab-direct" onclick="switchMode('direct')">✏️ 直接输入</button>
+        </div>
+
+        <!-- 打卡模式 -->
+        <div class="mode-panel on" id="panel-clock">
+            <div class="r2" style="margin-bottom:8px">
+                <div>
+                    <label>上班时间</label>
+                    <input type="time" id="log-in" onchange="calcHours()">
+                </div>
+                <div>
+                    <label>下班时间</label>
+                    <input type="time" id="log-out" onchange="calcHours()">
+                </div>
             </div>
-            <div>
-                <label>下班时间</label>
-                <input type="time" id="log-out" onchange="calcHours()">
+            <div class="r2" style="margin-bottom:12px">
+                <button class="btn bk" style="font-size:14px" onclick="stampIn()">▶ 记上班</button>
+                <button class="btn bk" style="font-size:14px" onclick="stampOut()">■ 记下班</button>
+            </div>
+            <div class="calc-bar">
+                <span style="font-size:13px;color:#8e8e93">计算结果: <b id="calc-result" style="color:#fff">--</b></span>
+                <button class="btn bg btn-sm" onclick="applyCalc()">填入下方 ↓</button>
             </div>
         </div>
-        <div class="r2" style="margin-bottom:12px">
-            <button class="btn bk" style="font-size:14px" onclick="stampIn()">▶ 记上班</button>
-            <button class="btn bk" style="font-size:14px" onclick="stampOut()">■ 记下班</button>
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:12px; border-radius:10px">
-            <span style="font-size:13px; color:#8e8e93">计算结果: <b id="calc-result" style="color:#fff">--</b></span>
-            <button class="btn bg" style="width:auto; padding:6px 15px; font-size:13px" onclick="applyCalc()">填入下方</button>
+
+        <!-- 直接输入模式 -->
+        <div class="mode-panel" id="panel-direct">
+            <div style="background:rgba(29,158,117,0.1);border:0.5px solid rgba(29,158,117,0.3);border-radius:10px;padding:12px;margin-bottom:12px">
+                <p style="font-size:13px;color:#8e8e93;line-height:1.6">直接在下方"工时数"填写即可，无需打卡时间。</p>
+            </div>
         </div>
     </div>
 
     <div class="cd">
-        <div class="ct">添加工时记录</div>
+        <div class="ct">添加记录</div>
         <label>公司</label>
         <select id="log-co"></select>
-        
         <div class="r2">
             <div><label>日期</label><input type="date" id="log-date"></div>
-            <div><label>工时数</label><input type="number" id="log-hours" step="0.5" placeholder="0.0"></div>
+            <div><label>工时数 (小时)</label><input type="number" id="log-hours" step="0.5" min="0" placeholder="0.0"></div>
         </div>
-        
         <label>备注 (项目/内容)</label>
         <input type="text" id="log-note" placeholder="选填...">
         <button class="btn bg" onclick="addEntry()">＋ 保存记录</button>
     </div>
 
     <div class="cd">
-        <div class="ct">历史记录 (按日期排序)</div>
+        <div class="ct">全部记录</div>
         <div id="all-entries"></div>
     </div>
 </div>
@@ -146,10 +167,10 @@
         <div class="ct">记录发薪</div>
         <select id="p-co" onchange="upPrev()"></select>
         <div class="r2">
-            <div><label>发薪工时</label><input type="number" id="p-hours" step="0.5" oninput="upPrev()"></div>
+            <div><label>核销工时</label><input type="number" id="p-hours" step="0.5" min="0" oninput="upPrev()"></div>
             <div><label>周次</label><input type="text" id="p-week"></div>
         </div>
-        <div id="p-prev" style="font-size:13px; color:#8e8e93; margin-bottom:15px; line-height:1.6"></div>
+        <div id="p-prev" style="font-size:13px;color:#8e8e93;margin-bottom:15px;line-height:1.8;background:rgba(0,0,0,0.2);padding:10px;border-radius:8px"></div>
         <button class="btn ba" onclick="doPaid()">确认核销存余</button>
     </div>
     <div class="cd"><div class="ct">发薪历史</div><div id="paid-list"></div></div>
@@ -159,7 +180,7 @@
     <div class="cd">
         <div class="ct">周报预览</div>
         <select id="rep-week"></select>
-        <button class="btn bb" onclick="genReport()">生成本周预览</button>
+        <button class="btn bb" style="margin-top:4px" onclick="genReport()">生成预览</button>
     </div>
     <div id="report-out"></div>
 </div>
@@ -170,6 +191,10 @@
         <label>公司 A 名称</label><input type="text" id="set-a">
         <label>公司 B 名称</label><input type="text" id="set-b">
         <button class="btn bg" onclick="saveSet()">保存更改</button>
+    </div>
+    <div class="cd">
+        <div class="ct">数据</div>
+        <button class="btn bk" onclick="exportData()" style="margin-bottom:10px">导出数据 (JSON)</button>
     </div>
 </div>
 
@@ -182,231 +207,314 @@
 </nav>
 
 <script>
-const SK = 'wt_pro_v1';
+const SK = 'wt_pro_v2';
 let S = JSON.parse(localStorage.getItem(SK) || '{"companies":{"A":{"name":"公司A"},"B":{"name":"公司B"}},"entries":[],"payments":[]}');
 let calY, calM;
+let currentMode = 'clock';
 
-// 工具函数
-const f = h => (Number(h) % 1 === 0 ? h : Number(h).toFixed(1)) + 'h';
+// ── 工具 ──────────────────────────────────────────────
+const fh = h => {
+    const n = Number(h);
+    return (n % 1 === 0 ? n : n.toFixed(1)) + 'h';
+};
 const today = () => new Date().toISOString().split('T')[0];
 const persist = () => localStorage.setItem(SK, JSON.stringify(S));
 const toast = (m, ok=true) => {
     const t = document.getElementById('toast');
-    t.textContent = m; t.style.background = ok ? '#1D9E75' : '#ff453a';
-    t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000);
+    t.textContent = m;
+    t.style.background = ok ? '#1D9E75' : '#ff453a';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
 };
 
-// 获取周次 (ISO 8601)
 function wkOf(dateStr) {
     const d = new Date(dateStr + 'T00:00:00');
-    d.setHours(0, 0, 0, 0);
     d.setDate(d.getDate() + 4 - (d.getDay() || 7));
-    const yearStart = new Date(d.getFullYear(), 0, 1);
-    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-    return `${d.getFullYear()}-W${String(weekNo).padStart(2, '0')}`;
+    const y = new Date(d.getFullYear(), 0, 1);
+    return `${d.getFullYear()}-W${String(Math.ceil(((d - y) / 86400000 + 1) / 7)).padStart(2,'0')}`;
 }
 
-// 核心逻辑：计算存余
 function getBalance() {
-    const t = {A: 0, B: 0}, p = {A: 0, B: 0};
+    const t = {A:0,B:0}, p = {A:0,B:0};
     S.entries.forEach(e => t[e.co] += Number(e.hours));
     S.payments.forEach(x => p[x.co] += Number(x.hours));
-    return { A: t.A - p.A, B: t.B - p.B };
+    return {A: t.A - p.A, B: t.B - p.B};
 }
 
-// 页面切换
+// ── 页面切换 ──────────────────────────────────────────
 function goPage(id, btn) {
     document.querySelectorAll('.pg').forEach(x => x.classList.remove('on'));
     document.querySelectorAll('nav button').forEach(x => x.classList.remove('on'));
     document.getElementById('pg-' + id).classList.add('on');
     btn.classList.add('on');
-    window['r' + id.charAt(0).toUpperCase() + id.slice(1)]();
+    const renders = {cal:rCal, log:rLog, paid:rPaid, rep:rRep, set:rSet};
+    renders[id]?.();
 }
 
-// 渲染：日历
+// ── 模式切换 ──────────────────────────────────────────
+function switchMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+    document.querySelectorAll('.mode-panel').forEach(p => p.classList.remove('on'));
+    document.getElementById('tab-' + mode).classList.add('on');
+    document.getElementById('panel-' + mode).classList.add('on');
+}
+
+// ── 日历 ──────────────────────────────────────────────
 function rCal() {
     const b = getBalance(), curWk = wkOf(today());
     let wh = 0;
     S.entries.filter(e => wkOf(e.date) === curWk).forEach(e => wh += Number(e.hours));
-    
-    document.getElementById('h-week').textContent = f(wh);
-    document.getElementById('h-saved').textContent = f(b.A + b.B);
+    document.getElementById('h-week').textContent = fh(wh);
+    document.getElementById('h-saved').textContent = fh(b.A + b.B);
 
     if (calY === undefined) { const n = new Date(); calY = n.getFullYear(); calM = n.getMonth(); }
-    document.getElementById('cal-label').textContent = `${calY}年 ${calM + 1}月`;
+    document.getElementById('cal-label').textContent = `${calY}年 ${calM+1}月`;
 
     const fd = new Date(calY, calM, 1).getDay();
-    const dim = new Date(calY, calM + 1, 0).getDate();
+    const dim = new Date(calY, calM+1, 0).getDate();
     const g = document.getElementById('cal-grid');
     g.innerHTML = ['日','一','二','三','四','五','六'].map(d => `<div class="dw">${d}</div>`).join('');
 
     for (let i = 0; i < fd; i++) g.innerHTML += '<div class="dy em"></div>';
 
     const dayMap = {};
+    const prefix = `${calY}-${String(calM+1).padStart(2,'0')}`;
     S.entries.forEach(e => {
-        if (e.date.startsWith(`${calY}-${String(calM+1).padStart(2,'0')}`)) {
-            if (!dayMap[e.date]) dayMap[e.date] = {A:0, B:0};
+        if (e.date.startsWith(prefix)) {
+            if (!dayMap[e.date]) dayMap[e.date] = {A:0,B:0};
             dayMap[e.date][e.co] += Number(e.hours);
         }
     });
 
     for (let d = 1; d <= dim; d++) {
-        const ds = `${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        const info = dayMap[ds] || {A:0, B:0};
+        const ds = `${prefix}-${String(d).padStart(2,'0')}`;
+        const info = dayMap[ds] || {A:0,B:0};
         const total = info.A + info.B;
         const isToday = ds === today();
-        
+        const barColor = info.A > 0 && info.B > 0
+            ? 'linear-gradient(90deg,#1D9E75 50%,#378ADD 50%)'
+            : (info.B > 0 ? '#378ADD' : '#1D9E75');
         g.innerHTML += `
-            <div class="dy ${total > 0 ? 'he' : ''} ${isToday ? 'td' : ''}" onclick="calClick('${ds}')">
+            <div class="dy${total>0?' he':''}${isToday?' td':''}" onclick="calClick('${ds}')">
                 <div class="dn">${d}</div>
-                ${total > 0 ? `<div class="dh">${f(total)}</div>` : ''}
-                <div class="bb2">
-                    <div class="bf" style="width:${Math.min(100, (total/12)*100)}%; background:${info.A>0 && info.B>0 ? 'linear-gradient(90deg,#1D9E75 50%,#378ADD 50%)' : (info.B>0 ? '#378ADD':'#1D9E75')}"></div>
-                </div>
+                ${total>0 ? `<div class="dh">${fh(total)}</div>` : ''}
+                <div class="bb2"><div class="bf" style="width:${Math.min(100,(total/12)*100)}%;background:${barColor}"></div></div>
             </div>`;
     }
     rRecent();
 }
 
-function calClick(d) { document.getElementById('log-date').value = d; goPage('log', document.querySelector('nav button:nth-child(2)')); }
-function calMove(dir) { calM += dir; if(calM>11){calM=0;calY++} else if(calM<0){calM=11;calY--} rCal(); }
+function calClick(d) {
+    document.getElementById('log-date').value = d;
+    goPage('log', document.querySelector('nav button:nth-child(2)'));
+}
+function calMove(dir) {
+    calM += dir;
+    if (calM > 11) { calM = 0; calY++; }
+    else if (calM < 0) { calM = 11; calY--; }
+    rCal();
+}
 
 function rRecent() {
-    const last = [...S.entries].sort((a,b) => b.date.localeCompare(a.date)).slice(0, 3);
-    document.getElementById('recent-list').innerHTML = last.length ? last.map(e => `
-        <div class="row">
-            <div>
-                <div class="rm">${e.date} <span class="bx x${e.co.toLowerCase()}">${S.companies[e.co].name}</span></div>
-                <div class="rd">${e.note || '日常工作'}</div>
-            </div>
-            <div class="rh">${f(e.hours)}</div>
-        </div>`).join('') : '<div class="empty">暂无近期记录</div>';
+    const last = [...S.entries].sort((a,b) => b.date.localeCompare(a.date)).slice(0,5);
+    document.getElementById('recent-list').innerHTML = last.length
+        ? last.map(e => `
+            <div class="row" style="cursor:pointer" onclick="calClick('${e.date}')">
+                <div>
+                    <div class="rm">${e.date} <span class="bx x${e.co.toLowerCase()}">${S.companies[e.co].name}</span></div>
+                    <div class="rd">${e.note || '日常工作'}${e.inTime ? ` <small style="color:#636366">(${e.inTime}–${e.outTime})</small>` : ''}</div>
+                </div>
+                <div class="rh">${fh(e.hours)}</div>
+            </div>`).join('')
+        : '<div class="empty">暂无记录</div>';
 }
 
-// 渲染：记工时
+// ── 记工时 ────────────────────────────────────────────
 function rLog() {
-    const coSel = document.getElementById('log-co');
-    coSel.innerHTML = `<option value="A">${S.companies.A.name}</option><option value="B">${S.companies.B.name}</option>`;
+    const sel = document.getElementById('log-co');
+    sel.innerHTML = Object.entries(S.companies).map(([k,v]) => `<option value="${k}">${v.name}</option>`).join('');
     if (!document.getElementById('log-date').value) document.getElementById('log-date').value = today();
-    
-    const all = [...S.entries].sort((a,b) => b.date.localeCompare(a.date));
-    document.getElementById('all-entries').innerHTML = all.length ? all.map(e => `
-        <div class="row">
-            <div>
-                <div class="rm">${e.date} <span class="bx x${e.co.toLowerCase()}">${S.companies[e.co].name}</span></div>
-                <div class="rd">${e.note || '工作'} ${e.inTime ? `<small style="color:#636366">(${e.inTime}-${e.outTime})</small>`:''}</div>
-            </div>
-            <div style="display:flex; align-items:center">
-                <span class="rh">${f(e.hours)}</span>
-                <button class="xd" onclick="delE(${e.id})">✕</button>
-            </div>
-        </div>`).join('') : '<div class="empty">点击上方添加第一条记录</div>';
+    renderEntries();
 }
 
-function stampIn() { document.getElementById('log-in').value = new Date().toTimeString().slice(0,5); calcHours(); }
+function renderEntries() {
+    const all = [...S.entries].sort((a,b) => b.date.localeCompare(a.date));
+    document.getElementById('all-entries').innerHTML = all.length
+        ? all.map(e => `
+            <div class="row">
+                <div>
+                    <div class="rm">${e.date} <span class="bx x${e.co.toLowerCase()}">${S.companies[e.co].name}</span></div>
+                    <div class="rd">${e.note || '工作'}${e.inTime ? ` <small style="color:#636366">(${e.inTime}–${e.outTime})</small>` : ''}</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span class="rh">${fh(e.hours)}</span>
+                    <button class="xd" onclick="delE(${e.id})">删除</button>
+                </div>
+            </div>`).join('')
+        : '<div class="empty">点击上方添加第一条记录</div>';
+}
+
+function stampIn()  { document.getElementById('log-in').value  = new Date().toTimeString().slice(0,5); calcHours(); }
 function stampOut() { document.getElementById('log-out').value = new Date().toTimeString().slice(0,5); calcHours(); }
 
 function calcHours() {
-    const i = document.getElementById('log-in').value, o = document.getElementById('log-out').value;
-    if(!i || !o) return;
-    const m = (new Date(`2024-01-01T${o}`) - new Date(`2024-01-01T${i}`)) / 60000;
-    document.getElementById('calc-result').textContent = m > 0 ? f(m/60) : '时间错误';
+    const i = document.getElementById('log-in').value;
+    const o = document.getElementById('log-out').value;
+    if (!i || !o) return;
+    const m = (new Date(`2000-01-01T${o}`) - new Date(`2000-01-01T${i}`)) / 60000;
+    document.getElementById('calc-result').textContent = m > 0 ? fh(m/60) : '时间有误';
 }
 
 function applyCalc() {
     const res = document.getElementById('calc-result').textContent;
-    if (res.includes('h')) {
-        const val = parseFloat(res);
-        document.getElementById('log-hours').value = Math.round(val * 2) / 2;
-        toast('已填入并自动取整');
-    }
+    if (!res.includes('h') || res === '时间有误') return toast('请先输入正确的上下班时间', false);
+    const val = parseFloat(res);
+    document.getElementById('log-hours').value = Math.round(val * 2) / 2;
+    toast('已自动填入（取整至0.5h）');
 }
 
 function addEntry() {
-    const co = document.getElementById('log-co').value;
-    const date = document.getElementById('log-date').value;
+    const co    = document.getElementById('log-co').value;
+    const date  = document.getElementById('log-date').value;
     const hours = parseFloat(document.getElementById('log-hours').value);
-    const note = document.getElementById('log-note').value;
-    if (!date || !hours) return toast('日期和工时必填', false);
-    
-    S.entries.push({ id: Date.now(), co, date, hours, note, inTime: document.getElementById('log-in').value, outTime: document.getElementById('log-out').value });
-    persist(); rLog(); toast('保存成功');
-    document.getElementById('log-hours').value = ''; document.getElementById('log-note').value = '';
+    const note  = document.getElementById('log-note').value.trim();
+    if (!date)  return toast('请选择日期', false);
+    if (!hours || hours <= 0) return toast('请填写工时数', false);
+
+    const inTime  = currentMode === 'clock' ? document.getElementById('log-in').value  : '';
+    const outTime = currentMode === 'clock' ? document.getElementById('log-out').value : '';
+
+    S.entries.push({id: Date.now(), co, date, hours, note, inTime, outTime});
+    persist();
+    renderEntries();
+    toast('保存成功 ✓');
+    document.getElementById('log-hours').value = '';
+    document.getElementById('log-note').value  = '';
 }
 
-function delE(id) { S.entries = S.entries.filter(e => e.id !== id); persist(); rLog(); }
+function delE(id) {
+    if (!confirm('确认删除这条记录？')) return;
+    S.entries = S.entries.filter(e => e.id !== id);
+    persist();
+    renderEntries();
+    toast('已删除');
+}
 
-// 渲染：发薪
+// ── 发薪核销 ──────────────────────────────────────────
 function rPaid() {
-    const pCo = document.getElementById('p-co');
-    pCo.innerHTML = `<option value="A">${S.companies.A.name}</option><option value="B">${S.companies.B.name}</option>`;
+    const sel = document.getElementById('p-co');
+    sel.innerHTML = Object.entries(S.companies).map(([k,v]) => `<option value="${k}">${v.name}</option>`).join('');
     document.getElementById('p-week').value = wkOf(today());
     upPrev();
+
     const plist = [...S.payments].sort((a,b) => b.week.localeCompare(a.week));
-    document.getElementById('paid-list').innerHTML = plist.map(p => `
-        <div class="row">
-            <div class="rd">${p.week} <span class="bx xa">${S.companies[p.co].name}</span></div>
-            <div style="display:flex; align-items:center">
-                <span class="rh" style="color:#EF9F27">-${f(p.hours)}</span>
-                <button class="xd" onclick="delP(${p.id})">✕</button>
-            </div>
-        </div>`).join('');
+    document.getElementById('paid-list').innerHTML = plist.length
+        ? plist.map(p => `
+            <div class="row">
+                <div class="rd">${p.week} <span class="bx xa">${S.companies[p.co].name}</span></div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span class="rh" style="color:#EF9F27">−${fh(p.hours)}</span>
+                    <button class="xd" onclick="delP(${p.id})">删除</button>
+                </div>
+            </div>`).join('')
+        : '<div class="empty">暂无发薪记录</div>';
 }
 
 function upPrev() {
     const co = document.getElementById('p-co').value;
-    const b = getBalance()[co];
-    const inputH = parseFloat(document.getElementById('p-hours').value) || 0;
-    document.getElementById('p-prev').innerHTML = `当前存余: <b>${f(b)}</b><br>核销后剩余: <b style="color:#1D9E75">${f(b - inputH)}</b>`;
+    const b  = getBalance()[co];
+    const h  = parseFloat(document.getElementById('p-hours').value) || 0;
+    const after = b - h;
+    document.getElementById('p-prev').innerHTML =
+        `当前存余：<b style="color:#f2f2f7">${fh(b)}</b>　　
+         核销工时：<b style="color:#EF9F27">${h > 0 ? '−' + fh(h) : '--'}</b><br>
+         核销后剩余：<b style="color:${after >= 0 ? '#1D9E75' : '#ff453a'}">${fh(after)}</b>`;
 }
 
 function doPaid() {
-    const co = document.getElementById('p-co').value, hours = parseFloat(document.getElementById('p-hours').value), week = document.getElementById('p-week').value;
-    if (!hours || hours <= 0) return toast('请输入工时', false);
-    S.payments.push({ id: Date.now(), co, hours, week });
-    persist(); rPaid(); toast('核销成功');
+    const co    = document.getElementById('p-co').value;
+    const hours = parseFloat(document.getElementById('p-hours').value);
+    const week  = document.getElementById('p-week').value;
+    if (!hours || hours <= 0) return toast('请输入核销工时', false);
+    S.payments.push({id: Date.now(), co, hours, week});
+    persist();
+    rPaid();
+    toast('核销成功 ✓');
+    document.getElementById('p-hours').value = '';
 }
-function delP(id) { S.payments = S.payments.filter(p => p.id !== id); persist(); rPaid(); }
 
-// 渲染：周报
+function delP(id) {
+    if (!confirm('确认删除此发薪记录？')) return;
+    S.payments = S.payments.filter(p => p.id !== id);
+    persist();
+    rPaid();
+    toast('已删除');
+}
+
+// ── 周报 ──────────────────────────────────────────────
 function rRep() {
     const weeks = new Set([wkOf(today())]);
     S.entries.forEach(e => weeks.add(wkOf(e.date)));
-    document.getElementById('rep-week').innerHTML = [...weeks].sort().reverse().map(w => `<option value="${w}">${w}</option>`).join('');
+    document.getElementById('rep-week').innerHTML =
+        [...weeks].sort().reverse().map(w => `<option value="${w}">${w}</option>`).join('');
 }
 
 function genReport() {
     const wk = document.getElementById('rep-week').value;
-    const b = getBalance();
+    const b  = getBalance();
     let wA = 0, wB = 0;
-    S.entries.filter(e => wkOf(e.date) === wk).forEach(e => e.co === 'A' ? wA += e.hours : wB += e.hours);
-    
+    S.entries.filter(e => wkOf(e.date) === wk).forEach(e => {
+        if (e.co === 'A') wA += Number(e.hours);
+        else              wB += Number(e.hours);
+    });
+    const total = wA + wB;
+
     document.getElementById('report-out').innerHTML = `
-        <div class="cd" style="background:#fff; color:#1c1c1e">
+        <div class="cd" style="background:#fff;color:#1c1c1e">
             <div class="ct" style="color:#8e8e93">WEEKLY REPORT</div>
-            <h2 style="margin-bottom:15px">${wk}</h2>
-            <div class="row" style="border-color:#eee"><div class="rd" style="color:#1c1c1e">${S.companies.A.name}</div><div class="rh">${f(wA)}</div></div>
-            <div class="row" style="border-color:#eee"><div class="rd" style="color:#1c1c1e">${S.companies.B.name}</div><div class="rh">${f(wB)}</div></div>
-            <div style="margin-top:20px; padding-top:15px; border-top:2px solid #1c1c1e">
-                <div class="ml">累计总存余</div>
-                <div class="mv" style="color:#1c1c1e; font-size:32px">${f(b.A + b.B)}</div>
+            <h2 style="margin-bottom:16px;font-size:20px">${wk}</h2>
+            <div class="row" style="border-color:#eee">
+                <div class="rd" style="color:#1c1c1e">${S.companies.A.name}</div>
+                <div class="rh">${fh(wA)}</div>
+            </div>
+            <div class="row" style="border-color:#eee">
+                <div class="rd" style="color:#1c1c1e">${S.companies.B.name}</div>
+                <div class="rh">${fh(wB)}</div>
+            </div>
+            <div class="row" style="border-color:#eee">
+                <div class="rd" style="color:#1c1c1e;font-weight:600">本周合计</div>
+                <div class="rh" style="font-size:20px">${fh(total)}</div>
+            </div>
+            <div style="margin-top:20px;padding-top:15px;border-top:2px solid #1c1c1e">
+                <div style="font-size:12px;color:#888;margin-bottom:4px">累计总存余</div>
+                <div style="font-size:32px;font-weight:700;color:#1c1c1e">${fh(b.A + b.B)}</div>
             </div>
         </div>`;
 }
 
-// 渲染：设置
+// ── 设置 ──────────────────────────────────────────────
 function rSet() {
     document.getElementById('set-a').value = S.companies.A.name;
     document.getElementById('set-b').value = S.companies.B.name;
 }
 
 function saveSet() {
-    S.companies.A.name = document.getElementById('set-a').value || '公司A';
-    S.companies.B.name = document.getElementById('set-b').value || '公司B';
-    persist(); toast('设置已保存');
+    S.companies.A.name = document.getElementById('set-a').value.trim() || '公司A';
+    S.companies.B.name = document.getElementById('set-b').value.trim() || '公司B';
+    persist();
+    toast('设置已保存');
 }
 
-// 初始化
+function exportData() {
+    const blob = new Blob([JSON.stringify(S, null, 2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `工时记录_${today()}.json`;
+    a.click();
+}
+
+// ── 初始化 ────────────────────────────────────────────
 rCal();
 </script>
 </body>
